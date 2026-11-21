@@ -403,6 +403,17 @@ Examples of branch names:
 - `fix/booking-conflict-handling`
 - `fix/responsive-navbar`
 
+Recommended commit prefixes:
+
+| Prefix | Purpose |
+|--------|---------|
+| `feat:` | New functionality |
+| `fix:` | Bug fix |
+| `refactor:` | Code restructuring |
+| `test:` | Adding or updating tests |
+| `docs:` | Documentation changes |
+| `chore:` | Maintenance and configuration |
+
 ### 5. Implement & Verify Your Changes
 
 Follow the existing frontend structure:
