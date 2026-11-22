@@ -1,8 +1,13 @@
 
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
+import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
 
 function PlaceholderPage({ title }) {
@@ -47,6 +52,7 @@ function App() {
       }}
     >
       <div className="min-h-screen bg-surface-canvas text-text-primary transition-colors duration-200">
+
         <Navbar
           theme={theme}
           onToggleTheme={toggleTheme}
@@ -55,22 +61,40 @@ function App() {
         <Routes>
           <Route
             path="/"
+            element={<HomePage />}
+          />
+
+          <Route
+            path="/explore"
             element={<ResourceListPage />}
           />
 
           <Route
             path="/my-reservations"
-            element={<PlaceholderPage title="My Reservations" />}
+            element={
+              <PlaceholderPage title="My Reservations" />
+            }
           />
 
           <Route
             path="/admin"
-            element={<PlaceholderPage title="Admin Dashboard" />}
+            element={
+              <PlaceholderPage title="Admin Dashboard" />
+            }
+          />
+
+          <Route
+            path="/login"
+            element={
+              <PlaceholderPage title="Login" />
+            }
           />
 
           <Route
             path="*"
-            element={<PlaceholderPage title="Page Not Found" />}
+            element={
+              <PlaceholderPage title="Page Not Found" />
+            }
           />
         </Routes>
       </div>
