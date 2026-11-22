@@ -1,5 +1,6 @@
 
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, Building2, MapPin } from "lucide-react";
 
 import resources from "../data/resources";
@@ -7,6 +8,8 @@ import ResourceCard from "../components/ResourceCard";
 import FilterBar from "../components/FilterBar";
 
 function ResourceListPage() {
+    const navigate = useNavigate();
+
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] =
         useState("All Categories");
@@ -74,9 +77,9 @@ function ResourceListPage() {
         setSelectedDistrict("All Districts");
     }
 
-    // Temporary details interaction until the details page is implemented
+    // Navigate to the selected resource details page
     function handleViewDetails(resource) {
-        alert(`You selected: ${resource.name}`);
+        navigate(`/resources/${resource.id}`);
     }
 
     const hasActiveFilters =

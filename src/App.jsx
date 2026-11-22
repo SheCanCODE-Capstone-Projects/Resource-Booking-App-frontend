@@ -5,7 +5,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-
+import ResourceDetailPage from "./pages/ResourceDetailPage";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
@@ -67,6 +67,12 @@ function App() {
           <Route
             path="/explore"
             element={<ResourceListPage />}
+          />
+
+
+          <Route
+            path="/resources/:id"
+            element={<ResourceDetailPage />}
           />
 
           <Route
