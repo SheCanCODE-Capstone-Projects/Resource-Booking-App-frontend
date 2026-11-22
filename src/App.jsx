@@ -40,7 +40,12 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <div className="min-h-screen bg-surface-canvas text-text-primary transition-colors duration-200">
         <Navbar
           theme={theme}

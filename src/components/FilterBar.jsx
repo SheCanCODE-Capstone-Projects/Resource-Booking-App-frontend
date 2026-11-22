@@ -69,9 +69,12 @@ function FilterBar({
     onDistrictChange,
     onReset,
 }) {
-    const districts = selectedProvince
-        ? provinces[selectedProvince] || []
-        : [];
+    const districts =
+        selectedProvince !== "All Provinces"
+            ? provinces[selectedProvince] || []
+            : [];
+
+    const districtDisabled = selectedProvince === "All Provinces";
 
     return (
         <section className="rounded-2xl border border-border bg-surface-card p-5 md:p-6">
@@ -198,11 +201,11 @@ function FilterBar({
                             onChange={(event) =>
                                 onDistrictChange(event.target.value)
                             }
-                            disabled={!selectedProvince || selectedProvince === "All Provinces"}
+                            disabled={districtDisabled}
                             className="w-full bg-transparent py-3 text-sm text-text-primary outline-none disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <option value="All Districts">
-                                {selectedProvince === "All Provinces"
+                                {districtDisabled
                                     ? "Select province first"
                                     : "All Districts"}
                             </option>
