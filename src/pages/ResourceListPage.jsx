@@ -10,6 +10,7 @@ import FilterBar from "../components/FilterBar";
 function ResourceListPage() {
     const navigate = useNavigate();
 
+    // Filter states
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] =
         useState("All Categories");
@@ -17,6 +18,8 @@ function ResourceListPage() {
         useState("All Provinces");
     const [selectedDistrict, setSelectedDistrict] =
         useState("All Districts");
+    const [selectedMinCapacity, setSelectedMinCapacity] = useState("");
+    const [selectedAmenities, setSelectedAmenities] = useState([]);
 
     // Filter resources based on all selected filters
     const filteredResources = useMemo(() => {
@@ -30,6 +33,7 @@ function ResourceListPage() {
                 resource.location,
                 resource.province,
                 resource.district,
+                ...(resource.amenities || []),
             ]
                 .filter(Boolean)
                 .join(" ")
@@ -49,11 +53,29 @@ function ResourceListPage() {
                 selectedDistrict === "All Districts" ||
                 resource.district === selectedDistrict;
 
+            const capacity = Number(selectedMinCapacity);
+
+            const matchesCapacity =
+                selectedMinCapacity === "" ||
+                (
+                    Number.isInteger(capacity) &&
+                    capacity >= 1 &&
+                    Number(resource.capacity) >= capacity
+                );
+
+            const resourceAmenities = resource.amenities || [];
+
+            const matchesAmenities = selectedAmenities.every((amenity) =>
+                resourceAmenities.includes(amenity)
+            );
+
             return (
                 matchesSearch &&
                 matchesCategory &&
                 matchesProvince &&
-                matchesDistrict
+                matchesDistrict &&
+                matchesCapacity &&
+                matchesAmenities
             );
         });
     }, [
@@ -61,6 +83,8 @@ function ResourceListPage() {
         selectedCategory,
         selectedProvince,
         selectedDistrict,
+        selectedMinCapacity,
+        selectedAmenities,
     ]);
 
     // Update province and reset district when province changes
@@ -75,18 +99,23 @@ function ResourceListPage() {
         setSelectedCategory("All Categories");
         setSelectedProvince("All Provinces");
         setSelectedDistrict("All Districts");
+        setSelectedMinCapacity("");
+        setSelectedAmenities([]);
     }
 
-    // Navigate to the selected resource details page
+    // Navigate to selected resource details
     function handleViewDetails(resource) {
         navigate(`/resources/${resource.id}`);
     }
 
+    // Check whether any filter is active
     const hasActiveFilters =
         searchQuery.trim() !== "" ||
         selectedCategory !== "All Categories" ||
         selectedProvince !== "All Provinces" ||
-        selectedDistrict !== "All Districts";
+        selectedDistrict !== "All Districts" ||
+        selectedMinCapacity !== "" ||
+        selectedAmenities.length > 0;
 
     return (
         <main className="mx-auto min-h-screen max-w-7xl px-5 py-10 lg:px-8">
@@ -122,6 +151,10 @@ function ResourceListPage() {
                 onProvinceChange={handleProvinceChange}
                 selectedDistrict={selectedDistrict}
                 onDistrictChange={setSelectedDistrict}
+                selectedMinCapacity={selectedMinCapacity}
+                onMinCapacityChange={setSelectedMinCapacity}
+                selectedAmenities={selectedAmenities}
+                onAmenitiesChange={setSelectedAmenities}
                 onReset={resetFilters}
             />
 
@@ -138,7 +171,7 @@ function ResourceListPage() {
                             Discover spaces that match your needs.
                         </p>
 
-                        {/* SHOW SELECTED LOCATION */}
+                        {/* SELECTED LOCATION */}
                         {(selectedProvince !== "All Provinces" ||
                             selectedDistrict !== "All Districts") && (
                                 <div className="mt-3 flex items-center gap-2 text-sm text-text-secondary">
@@ -190,7 +223,11 @@ function ResourceListPage() {
                     </div>
                 ) : (
                     /* EMPTY STATE */
-                    <div className="rounded-2xl border border-border bg-surface-card px-6 py-16 text-center">
+                    <div
+                        role="status"
+                        aria-live="polite"
+                        className="rounded-2xl border border-border bg-surface-card px-6 py-16 text-center"
+                    >
                         <Search
                             size={32}
                             className="mx-auto text-text-secondary"
@@ -202,7 +239,8 @@ function ResourceListPage() {
 
                         <p className="mt-2 text-sm text-text-secondary">
                             We couldn't find resources matching your selected
-                            filters. Try another district or category.
+                            filters. Try changing your search, capacity,
+                            amenities, or location.
                         </p>
 
                         <button

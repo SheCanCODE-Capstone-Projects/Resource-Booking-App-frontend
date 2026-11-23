@@ -1,5 +1,5 @@
 
-import { Search, MapPin, SlidersHorizontal, X } from "lucide-react";
+import { Search, MapPin, SlidersHorizontal, X, Users, Wifi } from "lucide-react";
 
 const categories = [
     "All Categories",
@@ -11,13 +11,37 @@ const categories = [
     "Event Garden",
 ];
 
+const amenities = [
+    "Wi-Fi",
+    "Whiteboard",
+    "Power outlets",
+    "Computers",
+    "Projector",
+    "Reading desks",
+    "Air conditioning",
+    "Printer",
+    "Private seating",
+    "Outdoor seating",
+    "Garden view",
+    "Family seating",
+    "Outdoor access",
+    "Conference screen",
+    "Video conferencing",
+    "Desk",
+    "Sound system",
+    "Shared desks",
+    "Lounge seating",
+    "Parking",
+    "Lakeside view",
+    "Event lighting",
+];
+
 const provinces = {
     "City of Kigali": [
         "Gasabo",
         "Kicukiro",
         "Nyarugenge",
     ],
-
     "Northern Province": [
         "Burera",
         "Gakenke",
@@ -25,7 +49,6 @@ const provinces = {
         "Musanze",
         "Rulindo",
     ],
-
     "Southern Province": [
         "Gisagara",
         "Huye",
@@ -36,7 +59,6 @@ const provinces = {
         "Nyaruguru",
         "Ruhango",
     ],
-
     "Eastern Province": [
         "Bugesera",
         "Gatsibo",
@@ -46,7 +68,6 @@ const provinces = {
         "Nyagatare",
         "Rwamagana",
     ],
-
     "Western Province": [
         "Karongi",
         "Ngororero",
@@ -67,6 +88,10 @@ function FilterBar({
     onProvinceChange,
     selectedDistrict,
     onDistrictChange,
+    selectedMinCapacity,
+    onMinCapacityChange,
+    selectedAmenities,
+    onAmenitiesChange,
     onReset,
 }) {
     const districts =
@@ -75,6 +100,18 @@ function FilterBar({
             : [];
 
     const districtDisabled = selectedProvince === "All Provinces";
+
+    function handleAmenityChange(amenity) {
+        const isSelected = selectedAmenities.includes(amenity);
+
+        if (isSelected) {
+            onAmenitiesChange(
+                selectedAmenities.filter((item) => item !== amenity)
+            );
+        } else {
+            onAmenitiesChange([...selectedAmenities, amenity]);
+        }
+    }
 
     return (
         <section className="rounded-2xl border border-border bg-surface-card p-5 md:p-6">
@@ -88,7 +125,7 @@ function FilterBar({
                 </h2>
             </div>
 
-            {/* FILTER FIELDS */}
+            {/* BASIC FILTERS */}
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 
                 {/* SEARCH */}
@@ -220,8 +257,99 @@ function FilterBar({
                 </div>
             </div>
 
+            {/* ADVANCED FILTERS */}
+            <div className="mt-6 grid gap-6 border-t border-border pt-6 md:grid-cols-2">
+
+                {/* MINIMUM CAPACITY */}
+                <div>
+                    <label
+                        htmlFor="minimum-capacity"
+                        className="mb-2 flex items-center gap-2 text-xs font-semibold text-text-secondary"
+                    >
+                        <Users size={16} />
+                        Minimum capacity
+                    </label>
+
+                    <input
+                        id="minimum-capacity"
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={selectedMinCapacity}
+                        onChange={(event) =>
+                            onMinCapacityChange(event.target.value)
+                        }
+                        placeholder="e.g. 10 people"
+                        className="w-full rounded-lg border border-border bg-surface-canvas px-4 py-3 text-sm text-text-primary outline-none placeholder:text-text-secondary focus:border-text-primary"
+                    />
+
+                    <p className="mt-2 text-xs text-text-secondary">
+                        Find spaces that can accommodate at least this many people.
+                    </p>
+                </div>
+
+                {/* AMENITIES */}
+                <fieldset className="min-w-0">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                        <legend className="flex items-center gap-2 text-sm font-semibold text-text-primary">
+                            <Wifi size={17} />
+                            Available amenities
+                        </legend>
+
+                        {selectedAmenities.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={() => onAmenitiesChange([])}
+                                className="shrink-0 text-xs font-medium text-text-secondary transition hover:text-text-primary"
+                            >
+                                Clear selection
+                            </button>
+                        )}
+                    </div>
+
+                    <p className="mb-4 text-xs text-text-secondary">
+                        Choose the facilities you need in your space.
+                    </p>
+
+                    {/* HORIZONTAL AMENITY CHIPS */}
+                    <div className="flex gap-2 overflow-x-auto whitespace-nowrap pb-3">
+                        {amenities.map((amenity) => {
+                            const isSelected =
+                                selectedAmenities.includes(amenity);
+
+                            return (
+                                <button
+                                    key={amenity}
+                                    type="button"
+                                    aria-pressed={isSelected}
+                                    onClick={() =>
+                                        handleAmenityChange(amenity)
+                                    }
+                                    className={`shrink-0 rounded-full border px-4 py-2.5 text-xs font-medium transition-all duration-200 ${isSelected
+                                            ? "border-text-primary bg-brand-primary text-white dark:text-black"
+                                            : "border-border bg-surface-canvas text-text-secondary hover:border-text-primary hover:text-text-primary"
+                                        }`}
+                                >
+                                    {amenity}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {selectedAmenities.length > 0 && (
+                        <p className="mt-2 text-xs text-text-secondary">
+                            {selectedAmenities.length}{" "}
+                            {selectedAmenities.length === 1
+                                ? "amenity"
+                                : "amenities"}{" "}
+                            selected
+                        </p>
+                    )}
+                </fieldset>
+            </div>
+
             {/* RESET FILTERS */}
-            <div className="mt-5 flex justify-end border-t border-border pt-4">
+            <div className="mt-6 flex justify-end border-t border-border pt-4">
                 <button
                     type="button"
                     onClick={onReset}
@@ -231,7 +359,6 @@ function FilterBar({
                     Clear filters
                 </button>
             </div>
-
         </section>
     );
 }
