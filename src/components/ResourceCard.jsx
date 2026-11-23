@@ -55,8 +55,8 @@ function ResourceCard({ resource, onViewDetails }) {
 
                 <span
                     className={`absolute right-4 top-4 rounded-full px-3 py-1.5 text-xs font-semibold ${resource.status === "Available"
-                            ? "bg-green-50 text-green-700"
-                            : "bg-red-50 text-red-700"
+                        ? "bg-green-50 text-green-700"
+                        : "bg-red-50 text-red-700"
                         }`}
                 >
                     {resource.status}
@@ -110,6 +110,8 @@ function ResourceCard({ resource, onViewDetails }) {
                 </button>
             </div>
         </article>
+       
+
     );
 }
 

@@ -1,126 +1,136 @@
 
+import {
+    MapPin,
+    Mail,
+    Phone,
+    ArrowUpRight,
+} from "lucide-react";
+
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
 
-const Footer = () => {
+function Footer() {
     return (
-        <footer className="bg-neutral-950 text-white">
-            <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+        <footer className="bg-black text-white">
 
-                <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
 
-                    {/* BRAND */}
-                    <div>
-                        <Link to="/" className="inline-block text-2xl font-bold tracking-tight">
-                            SpaceSync<span className="text-neutral-500">.</span>
-                        </Link>
+                {/* BRAND */}
+                <div>
+                    <h2 className="text-2xl font-bold tracking-tight">
+                        Space<span className="text-gray-400">Sync.</span>
+                    </h2>
 
-                        <p className="mt-5 max-w-xs text-sm leading-7 text-neutral-400">
-                            Find, explore and reserve the right spaces.
-                            Making resource booking simpler, smarter and more convenient.
-                        </p>
-
-                        <Link
-                            to="/explore"
-                            className="mt-6 inline-flex items-center gap-2 text-sm font-semibold transition hover:text-neutral-300"
-                        >
-                            Explore spaces
-                            <ArrowUpRight size={16} />
-                        </Link>
-                    </div>
-
-                    {/* QUICK LINKS */}
-                    <div>
-                        <h3 className="text-sm font-bold uppercase tracking-wider">
-                            Quick links
-                        </h3>
-
-                        <ul className="mt-6 space-y-4 text-sm text-neutral-400">
-                            <li>
-                                <Link to="/" className="transition hover:text-white">
-                                    Home
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/explore" className="transition hover:text-white">
-                                    Explore Spaces
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/my-reservations" className="transition hover:text-white">
-                                    My Reservations
-                                </Link>
-                            </li>
-                            <li>
-                                <Link to="/login" className="transition hover:text-white">
-                                    My Account
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* RESOURCES */}
-                    <div>
-                        <h3 className="text-sm font-bold uppercase tracking-wider">
-                            Discover spaces
-                        </h3>
-
-                        <ul className="mt-6 space-y-4 text-sm text-neutral-400">
-                            {[
-                                "Study Rooms",
-                                "Libraries",
-                                "Meeting Spaces",
-                                "Restaurants",
-                                "Coworking Spaces",
-                                "Event Gardens",
-                            ].map((category) => (
-                                <li key={category}>
-                                    <Link
-                                        to="/explore"
-                                        className="transition hover:text-white"
-                                    >
-                                        {category}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* SUPPORT */}
-                    <div>
-                        <h3 className="text-sm font-bold uppercase tracking-wider">
-                            Get started
-                        </h3>
-
-                        <p className="mt-6 text-sm leading-7 text-neutral-400">
-                            Ready to find a space that works for you?
-                            Start exploring with SpaceSync.
-                        </p>
-
-                        <Link
-                            to="/explore"
-                            className="mt-5 inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-neutral-200"
-                        >
-                            Find a space
-                            <ArrowUpRight size={16} />
-                        </Link>
-                    </div>
+                    <p className="mt-5 max-w-xs text-sm leading-7 text-gray-400">
+                        Find, explore, and reserve the perfect spaces.
+                        Making resource booking simpler, smarter,
+                        and more accessible.
+                    </p>
                 </div>
 
-                {/* BOTTOM FOOTER */}
-                <div className="mt-16 flex flex-col gap-4 border-t border-neutral-800 pt-7 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
-                    <p>
-                        © {new Date().getFullYear()} SpaceSync. All rights reserved.
-                    </p>
+                {/* QUICK LINKS */}
+                <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-wider">
+                        Explore
+                    </h3>
 
-                    <p>
-                        Designed to make space booking simple.
-                    </p>
+                    <ul className="mt-6 space-y-4 text-sm text-gray-400">
+                        <li>
+                            <Link to="/" className="transition hover:text-white">
+                                Home
+                            </Link>
+                        </li>
+
+                        <li>
+                            <Link to="/explore" className="transition hover:text-white">
+                                Explore Spaces
+                            </Link>
+                        </li>
+
+                        <li>
+                            <Link to="/my-reservations" className="transition hover:text-white">
+                                My Reservations
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+
+                {/* SUPPORT */}
+                <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-wider">
+                        Support
+                    </h3>
+
+                    <ul className="mt-6 space-y-4 text-sm text-gray-400">
+                        <li>
+                            <a href="#help" className="transition hover:text-white">
+                                Help Center
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#faqs" className="transition hover:text-white">
+                                FAQs
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#privacy" className="transition hover:text-white">
+                                Privacy Policy
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#terms" className="transition hover:text-white">
+                                Terms of Service
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                {/* CONTACT */}
+                <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-wider">
+                        Get in Touch
+                    </h3>
+
+                    <ul className="mt-6 space-y-5 text-sm text-gray-400">
+                        <li className="flex items-center gap-3">
+                            <Mail size={17} />
+                            <span>support@spacesync.com</span>
+                        </li>
+
+                        <li className="flex items-center gap-3">
+                            <Phone size={17} />
+                            <span>Contact our support team</span>
+                        </li>
+
+                        <li className="flex items-center gap-3">
+                            <MapPin size={17} />
+                            <span>Rwanda</span>
+                        </li>
+                    </ul>
                 </div>
 
             </div>
+
+            {/* BOTTOM FOOTER */}
+            <div className="border-t border-white/15">
+                <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-6 text-center sm:flex-row sm:px-8">
+
+                    <p className="text-xs text-gray-500">
+                        © {new Date().getFullYear()} SpaceSync. All rights reserved.
+                    </p>
+
+                    <a
+                        href="#top"
+                        className="inline-flex items-center gap-2 text-xs text-gray-400 transition hover:text-white"
+                    >
+                        Back to top
+                        <ArrowUpRight size={14} />
+                    </a>
+
+                </div>
+            </div>
+
         </footer>
     );
-};
+}
 
 export default Footer;

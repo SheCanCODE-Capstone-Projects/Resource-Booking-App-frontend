@@ -5,10 +5,12 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+
 import ResourceDetailPage from "./pages/ResourceDetailPage";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
+import Footer from "./components/Footer";
 
 function PlaceholderPage({ title }) {
   return (
@@ -51,58 +53,57 @@ function App() {
         v7_relativeSplatPath: true,
       }}
     >
-      <div className="min-h-screen bg-surface-canvas text-text-primary transition-colors duration-200">
+      <div className="flex min-h-screen flex-col bg-surface-canvas text-text-primary transition-colors duration-200">
 
+        {/* NAVBAR */}
         <Navbar
           theme={theme}
           onToggleTheme={toggleTheme}
         />
 
-        <Routes>
-          <Route
-            path="/"
-            element={<HomePage />}
-          />
+        {/* PAGE CONTENT */}
+        <div className="flex-1">
+          <Routes>
+            <Route
+              path="/"
+              element={<HomePage />}
+            />
 
-          <Route
-            path="/explore"
-            element={<ResourceListPage />}
-          />
+            <Route
+              path="/explore"
+              element={<ResourceListPage />}
+            />
 
+            <Route
+              path="/resources/:id"
+              element={<ResourceDetailPage />}
+            />
 
-          <Route
-            path="/resources/:id"
-            element={<ResourceDetailPage />}
-          />
+            <Route
+              path="/my-reservations"
+              element={<PlaceholderPage title="My Reservations" />}
+            />
 
-          <Route
-            path="/my-reservations"
-            element={
-              <PlaceholderPage title="My Reservations" />
-            }
-          />
+            <Route
+              path="/admin"
+              element={<PlaceholderPage title="Admin Dashboard" />}
+            />
 
-          <Route
-            path="/admin"
-            element={
-              <PlaceholderPage title="Admin Dashboard" />
-            }
-          />
+            <Route
+              path="/login"
+              element={<PlaceholderPage title="Login" />}
+            />
 
-          <Route
-            path="/login"
-            element={
-              <PlaceholderPage title="Login" />
-            }
-          />
+            <Route
+              path="*"
+              element={<PlaceholderPage title="Page Not Found" />}
+            />
+          </Routes>
+        </div>
 
-          <Route
-            path="*"
-            element={
-              <PlaceholderPage title="Page Not Found" />
-            }
-          />
-        </Routes>
+        {/* GLOBAL FOOTER */}
+        <Footer />
+
       </div>
     </BrowserRouter>
   );

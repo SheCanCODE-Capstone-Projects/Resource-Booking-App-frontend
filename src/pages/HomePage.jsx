@@ -479,9 +479,6 @@ function HomePage() {
                 </div>
             </section>
 
-            {/* FOOTER */}
-            <Footer />
-
         </main>
     );
 }
