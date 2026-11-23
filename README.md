@@ -110,7 +110,7 @@ spacesync-frontend/
 │
 ├── src/
 │   ├── api/                        # Axios/Fetch client and API service modules
-│   │   ├── client.js               # Configured HTTP client with auth headers and 409 Conflict interceptors
+│   │   ├── client.js               # Configured HTTP client with auth headers and 409 Conflict interceptorsc 
 │   │   ├── resourceApi.js          # /api/resources endpoints and availability requests
 │   │   ├── reservationApi.js       # /api/reservations endpoints for booking and cancellation
 │   │   ├── waitlistApi.js          # /api/waitlist endpoints for joining and leaving queues

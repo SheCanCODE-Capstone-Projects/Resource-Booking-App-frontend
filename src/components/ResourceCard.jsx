@@ -110,7 +110,7 @@ function ResourceCard({ resource, onViewDetails }) {
                 </button>
             </div>
         </article>
-       
+
 
     );
 }

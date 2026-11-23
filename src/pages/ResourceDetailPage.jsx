@@ -10,6 +10,7 @@ import {
     XCircle,
     Clock,
     Building2,
+    HelpCircle,
 } from "lucide-react";
 
 import resources from "../data/resources";
@@ -17,7 +18,7 @@ import resources from "../data/resources";
 function ResourceDetailPage() {
     const { id } = useParams();
 
-    // Find the resource using the ID from the URL
+    // Find the selected resource
     const resource = resources.find(
         (item) => String(item.id) === id
     );
@@ -53,8 +54,17 @@ function ResourceDetailPage() {
         );
     }
 
-    const isAvailable =
-        String(resource.status || "").toLowerCase() === "available";
+    // Determine resource availability
+    const status = resource.status?.toLowerCase();
+
+    const isAvailable = status === "available";
+    const isUnavailable = status === "unavailable";
+
+    const statusStyles = isAvailable
+        ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"
+        : isUnavailable
+            ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400"
+            : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300";
 
     return (
         <main className="mx-auto min-h-screen max-w-7xl px-5 py-10 lg:px-8">
@@ -71,23 +81,24 @@ function ResourceDetailPage() {
             {/* RESOURCE HEADER */}
             <section className="mt-8">
                 <div className="flex flex-wrap items-center gap-3">
+
                     <span className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-text-secondary">
                         {resource.category}
                     </span>
 
+                    {/* AVAILABILITY BADGE */}
                     <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${isAvailable
-                                ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"
-                                : "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
-                            }`}
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${statusStyles}`}
                     >
                         {isAvailable ? (
                             <CheckCircle2 size={14} />
+                        ) : isUnavailable ? (
+                            <XCircle size={14} />
                         ) : (
-                            <Clock size={14} />
+                            <HelpCircle size={14} />
                         )}
 
-                        {resource.status || "Status not specified"}
+                        {resource.status || "Status unknown"}
                     </span>
                 </div>
 
@@ -106,13 +117,16 @@ function ResourceDetailPage() {
             {/* RESOURCE IMAGE AND INFORMATION */}
             <section className="mt-10 grid gap-10 lg:grid-cols-5">
 
-                {/* IMAGE */}
+                {/* RESOURCE IMAGE */}
                 <div className="lg:col-span-3">
                     <div className="overflow-hidden rounded-2xl border border-border bg-surface-muted">
                         {resource.image ? (
                             <img
                                 src={resource.image}
                                 alt={resource.name}
+                                onError={(event) => {
+                                    event.currentTarget.style.display = "none";
+                                }}
                                 className="h-[300px] w-full object-cover sm:h-[420px]"
                             />
                         ) : (
@@ -123,8 +137,9 @@ function ResourceDetailPage() {
                     </div>
                 </div>
 
-                {/* QUICK INFORMATION */}
+                {/* SPACE OVERVIEW */}
                 <div className="flex flex-col rounded-2xl border border-border bg-surface-card p-6 lg:col-span-2">
+
                     <h2 className="text-xl font-bold text-text-primary">
                         Space overview
                     </h2>
@@ -139,15 +154,13 @@ function ResourceDetailPage() {
 
                         {/* LOCATION */}
                         <div className="flex items-start gap-3">
-                            <MapPin
-                                size={19}
-                                className="mt-0.5 text-text-secondary"
-                            />
+                            <MapPin size={19} className="mt-0.5 text-text-secondary" />
 
                             <div>
                                 <p className="text-xs font-medium text-text-secondary">
                                     Location
                                 </p>
+
                                 <p className="mt-1 text-sm font-semibold text-text-primary">
                                     {[resource.location, resource.district, resource.province]
                                         .filter(Boolean)
@@ -159,15 +172,13 @@ function ResourceDetailPage() {
                         {/* CAPACITY */}
                         {resource.capacity != null && (
                             <div className="flex items-start gap-3">
-                                <Users
-                                    size={19}
-                                    className="mt-0.5 text-text-secondary"
-                                />
+                                <Users size={19} className="mt-0.5 text-text-secondary" />
 
                                 <div>
                                     <p className="text-xs font-medium text-text-secondary">
                                         Capacity
                                     </p>
+
                                     <p className="mt-1 text-sm font-semibold text-text-primary">
                                         {resource.capacity} people
                                     </p>
@@ -177,15 +188,13 @@ function ResourceDetailPage() {
 
                         {/* CATEGORY */}
                         <div className="flex items-start gap-3">
-                            <Tag
-                                size={19}
-                                className="mt-0.5 text-text-secondary"
-                            />
+                            <Tag size={19} className="mt-0.5 text-text-secondary" />
 
                             <div>
                                 <p className="text-xs font-medium text-text-secondary">
                                     Category
                                 </p>
+
                                 <p className="mt-1 text-sm font-semibold text-text-primary">
                                     {resource.category}
                                 </p>
@@ -195,15 +204,13 @@ function ResourceDetailPage() {
                         {/* PRICE */}
                         {resource.price != null && (
                             <div className="flex items-start gap-3">
-                                <CalendarDays
-                                    size={19}
-                                    className="mt-0.5 text-text-secondary"
-                                />
+                                <CalendarDays size={19} className="mt-0.5 text-text-secondary" />
 
                                 <div>
                                     <p className="text-xs font-medium text-text-secondary">
                                         Price
                                     </p>
+
                                     <p className="mt-1 text-sm font-semibold text-text-primary">
                                         {typeof resource.price === "number"
                                             ? `${resource.price.toLocaleString()} RWF`
@@ -214,7 +221,39 @@ function ResourceDetailPage() {
                         )}
                     </div>
 
+                    {/* AVAILABILITY MESSAGE AND ACTION */}
                     <div className="mt-auto pt-8">
+
+                        {isAvailable && (
+                            <div className="mb-4 flex items-start gap-3 rounded-lg bg-green-50 p-4 text-green-700 dark:bg-green-950 dark:text-green-400">
+                                <CheckCircle2 size={19} className="mt-0.5 shrink-0" />
+
+                                <p className="text-sm leading-6">
+                                    This space is currently available. You can proceed to the booking stage.
+                                </p>
+                            </div>
+                        )}
+
+                        {isUnavailable && (
+                            <div className="mb-4 flex items-start gap-3 rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-950 dark:text-red-400">
+                                <XCircle size={19} className="mt-0.5 shrink-0" />
+
+                                <p className="text-sm leading-6">
+                                    This space is currently unavailable and cannot be booked.
+                                </p>
+                            </div>
+                        )}
+
+                        {!isAvailable && !isUnavailable && (
+                            <div className="mb-4 flex items-start gap-3 rounded-lg bg-red-100 p-4 text-white-600 dark:bg-red-800 dark:text-red-300">
+                                <Clock size={19} className="mt-0.5 shrink-0" />
+
+                                <p className="text-sm leading-6">
+                                    Availability has not been confirmed. Please check back later.
+                                </p>
+                            </div>
+                        )}
+
                         <button
                             type="button"
                             disabled={!isAvailable}
@@ -224,17 +263,11 @@ function ResourceDetailPage() {
                                 ? "Booking feature coming next"
                                 : "Currently unavailable"}
                         </button>
-
-                        <p className="mt-3 text-center text-xs text-text-secondary">
-                            {isAvailable
-                                ? "Booking functionality will be connected in the next stage."
-                                : "You can explore other available spaces."}
-                        </p>
                     </div>
                 </div>
             </section>
 
-            {/* ADDITIONAL INFORMATION */}
+            {/* ABOUT THIS SPACE */}
             <section className="mt-12 rounded-2xl border border-border bg-surface-muted p-6 sm:p-8">
                 <h2 className="text-xl font-bold text-text-primary">
                     About this space
