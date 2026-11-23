@@ -28,14 +28,15 @@ const fallbackImages = {
 
 function ResourceCard({ resource, onViewDetails }) {
     const fallbackImage =
-        fallbackImages[resource.category] ||
-        fallbackImages.Campus;
+        fallbackImages[resource.category] || fallbackImages.Campus;
+
+    const isAvailable = resource.status === "Available";
 
     return (
-        <article className="group overflow-hidden rounded-2xl border border-border bg-surface-card transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+        <article className="group overflow-hidden rounded-2xl border border-[#1B3F36]/15 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-[#F5F1E6]/15 dark:bg-[#1A2923]">
 
             {/* RESOURCE IMAGE */}
-            <div className="relative h-56 overflow-hidden bg-surface-muted">
+            <div className="relative h-56 overflow-hidden bg-[#EAE3D3]">
                 <img
                     src={resource.image || fallbackImage}
                     alt={`${resource.name} - ${resource.category} resource`}
@@ -47,55 +48,63 @@ function ResourceCard({ resource, onViewDetails }) {
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
 
-                <span className="absolute bottom-4 left-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-black">
+                {/* CATEGORY */}
+                <span className="absolute bottom-4 left-4 rounded-full bg-[#F5F1E6] px-3 py-1.5 text-xs font-semibold text-[#1B3F36]">
                     {resource.category}
                 </span>
 
+                {/* AVAILABILITY */}
                 <span
-                    className={`absolute right-4 top-4 rounded-full px-3 py-1.5 text-xs font-semibold ${resource.status === "Available"
-                        ? "bg-green-50 text-green-700"
-                        : "bg-red-50 text-red-700"
+                    className={`absolute right-4 top-4 rounded-full px-3 py-1.5 text-xs font-semibold ${isAvailable
+                            ? "bg-[#E6F0E9] text-[#1B3F36]"
+                            : "bg-[#F5E6DF] text-[#8B4A33]"
                         }`}
                 >
                     {resource.status}
                 </span>
             </div>
 
-            {/* CARD HEADER */}
+            {/* CARD CONTENT */}
             <div className="p-6">
-                <h3 className="text-xl font-bold tracking-tight text-text-primary">
+                <h3 className="text-xl font-bold tracking-tight text-[#1B3F36] dark:text-[#F5F1E6]">
                     {resource.name}
                 </h3>
 
                 {/* DESCRIPTION */}
-                <p className="mt-3 min-h-[72px] text-sm leading-6 text-text-secondary">
+                <p className="mt-3 min-h-[72px] text-sm leading-6 text-[#59665F] dark:text-[#B9C5BE]">
                     {resource.description}
                 </p>
 
                 {/* RESOURCE DETAILS */}
-                <div className="mt-5 space-y-3 border-t border-border py-5">
-                    <div className="flex items-center gap-3 text-sm text-text-secondary">
-                        <MapPin size={17} className="shrink-0" />
+                <div className="mt-5 space-y-3 border-t border-[#1B3F36]/10 py-5 dark:border-[#F5F1E6]/15">
+                    <div className="flex items-center gap-3 text-sm text-[#59665F] dark:text-[#B9C5BE]">
+                        <MapPin
+                            size={17}
+                            className="shrink-0 text-[#8B4A33]"
+                        />
                         <span>{resource.location}</span>
                     </div>
 
-                    <div className="flex items-center gap-3 text-sm text-text-secondary">
-                        <Users size={17} className="shrink-0" />
+                    <div className="flex items-center gap-3 text-sm text-[#59665F] dark:text-[#B9C5BE]">
+                        <Users
+                            size={17}
+                            className="shrink-0 text-[#8B4A33]"
+                        />
                         <span>Capacity: {resource.capacity} people</span>
                     </div>
                 </div>
             </div>
 
             {/* CARD FOOTER */}
-            <div className="flex items-center justify-between border-t border-border bg-surface-muted px-6 py-5">
+            <div className="flex items-center justify-between border-t border-[#1B3F36]/10 bg-[#F5F1E6] px-6 py-5 dark:border-[#F5F1E6]/15 dark:bg-[#20332B]">
                 <div>
-                    <p className="text-xs text-text-secondary">
+                    <p className="text-xs text-[#59665F] dark:text-[#B9C5BE]">
                         Pricing
                     </p>
 
-                    <p className="mt-1 text-sm font-bold text-text-primary">
+                    <p className="mt-1 text-sm font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
                         {resource.price}
                     </p>
                 </div>
@@ -103,15 +112,13 @@ function ResourceCard({ resource, onViewDetails }) {
                 <button
                     type="button"
                     onClick={() => onViewDetails(resource)}
-                    className="inline-flex items-center gap-2 rounded-lg bg-brand-primary px-4 py-3 text-xs font-semibold text-white transition hover:bg-brand-hover dark:text-black"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[#1B3F36] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#8B4A33] focus:outline-none focus:ring-2 focus:ring-[#8B4A33] focus:ring-offset-2"
                 >
                     View details
                     <ArrowUpRight size={16} />
                 </button>
             </div>
         </article>
-
-
     );
 }
 
