@@ -1,4 +1,5 @@
 
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import {
@@ -16,20 +17,42 @@ import {
     Sparkles,
 } from "lucide-react";
 
-import resources from "../data/resources";
+import {
+    getResources,
+    subscribeToResourceChanges,
+} from "../data/resourceStorage";
 
 function ResourceDetailPage() {
     const { id } = useParams();
 
+    // Load resources from the shared catalogue.
+    const [resources, setResources] = useState(getResources);
+
+    const [imageError, setImageError] = useState(false);
+
+    // Refresh resource details whenever the catalogue changes.
+    useEffect(() => {
+        const refreshResources = () => {
+            setResources(getResources());
+            setImageError(false);
+        };
+
+        return subscribeToResourceChanges(refreshResources);
+    }, []);
+
+    // Find the selected resource.
     const resource = resources.find(
-        (item) => String(item.id) === id
+        (item) => String(item.id) === String(id)
     );
 
     if (!resource) {
         return (
             <main className="flex min-h-[70vh] items-center justify-center bg-[#F5F1E6] px-5 dark:bg-[#111A17]">
                 <div className="max-w-md text-center">
-                    <Building2 size={46} className="mx-auto text-[#8B4A33]" />
+                    <Building2
+                        size={46}
+                        className="mx-auto text-[#8B4A33]"
+                    />
 
                     <h1 className="mt-5 text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
                         Resource not found
@@ -52,15 +75,30 @@ function ResourceDetailPage() {
         );
     }
 
-    const status = resource.status?.toLowerCase();
+    const status = resource.status?.trim().toLowerCase();
+
     const isAvailable = status === "available";
-    const isUnavailable = status === "unavailable";
-    const amenities = resource.amenities || [];
+
+    const isUnavailable =
+        status === "unavailable" ||
+        status === "not available";
+
+    const amenities = Array.isArray(resource.amenities)
+        ? resource.amenities
+        : [];
 
     const price =
         typeof resource.price === "number"
             ? `${resource.price.toLocaleString()} RWF`
             : resource.price || "Contact for pricing";
+
+    const location = [
+        resource.location,
+        resource.district,
+        resource.province,
+    ]
+        .filter(Boolean)
+        .join(", ");
 
     const statusStyles = isAvailable
         ? "bg-[#E6F0E9] text-[#1B3F36]"
@@ -85,10 +123,12 @@ function ResourceDetailPage() {
                 <section className="mt-8">
                     <div className="flex flex-wrap items-center gap-3">
                         <span className="rounded-full border border-[#8B4A33]/30 bg-[#8B4A33]/5 px-4 py-1.5 text-xs font-semibold text-[#8B4A33]">
-                            {resource.category}
+                            {resource.category || "Uncategorized"}
                         </span>
 
-                        <span className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold ${statusStyles}`}>
+                        <span
+                            className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold ${statusStyles}`}
+                        >
                             {isAvailable ? (
                                 <CheckCircle2 size={14} />
                             ) : isUnavailable ? (
@@ -96,6 +136,7 @@ function ResourceDetailPage() {
                             ) : (
                                 <HelpCircle size={14} />
                             )}
+
                             {resource.status || "Status unknown"}
                         </span>
                     </div>
@@ -105,31 +146,35 @@ function ResourceDetailPage() {
                     </h1>
 
                     <p className="mt-4 flex items-center gap-2 text-sm text-[#59665F] dark:text-[#B9C5BE]">
-                        <MapPin size={17} className="shrink-0 text-[#8B4A33]" />
-                        {[resource.location, resource.district, resource.province]
-                            .filter(Boolean)
-                            .join(", ")}
+                        <MapPin
+                            size={17}
+                            className="shrink-0 text-[#8B4A33]"
+                        />
+                        {location || "Location not specified"}
                     </p>
                 </section>
 
                 {/* MAIN RESOURCE CONTENT */}
                 <section className="mt-9 grid items-start gap-8 lg:grid-cols-5">
 
-                    {/* IMAGE */}
+                    {/* IMAGE AND ABOUT */}
                     <div className="lg:col-span-3">
-                        <div className="group relative overflow-hidden rounded-3xl bg-[#EAE3D3] shadow-lg">
-                            {resource.image ? (
+
+                        {/* RESOURCE IMAGE */}
+                        <div className="group relative overflow-hidden rounded-3xl bg-[#EAE3D3] shadow-lg dark:bg-[#20332B]">
+                            {resource.image && !imageError ? (
                                 <img
                                     src={resource.image}
                                     alt={resource.name}
-                                    onError={(event) => {
-                                        event.currentTarget.style.display = "none";
-                                    }}
+                                    onError={() => setImageError(true)}
                                     className="h-[300px] w-full object-cover transition duration-700 group-hover:scale-[1.02] sm:h-[480px]"
                                 />
                             ) : (
-                                <div className="flex h-[300px] items-center justify-center text-[#8B4A33] sm:h-[480px]">
-                                    <Building2 size={60} />
+                                <div className="flex h-[300px] items-center justify-center sm:h-[480px]">
+                                    <Building2
+                                        size={70}
+                                        className="text-[#8B4A33]"
+                                    />
                                 </div>
                             )}
 
@@ -137,6 +182,7 @@ function ResourceDetailPage() {
                                 <p className="text-sm font-medium text-white/80">
                                     Discover your next space
                                 </p>
+
                                 <h2 className="mt-1 text-2xl font-bold text-white">
                                     {resource.name}
                                 </h2>
@@ -150,7 +196,8 @@ function ResourceDetailPage() {
                             </h2>
 
                             <p className="mt-4 text-sm leading-7 text-[#59665F] dark:text-[#B9C5BE]">
-                                {resource.description}
+                                {resource.description ||
+                                    "No description has been provided for this space yet."}
                             </p>
 
                             <Link
@@ -185,33 +232,41 @@ function ResourceDetailPage() {
                             {/* DETAILS */}
                             <div className="space-y-0 px-6 sm:px-7">
 
+                                {/* LOCATION */}
                                 <div className="flex items-start gap-4 border-b border-[#1B3F36]/10 py-5 dark:border-white/10">
                                     <div className="rounded-xl bg-[#F5F1E6] p-3 dark:bg-[#20332B]">
-                                        <MapPin size={20} className="text-[#8B4A33]" />
+                                        <MapPin
+                                            size={20}
+                                            className="text-[#8B4A33]"
+                                        />
                                     </div>
 
                                     <div className="min-w-0">
                                         <p className="text-xs font-medium text-[#7B857F] dark:text-[#B9C5BE]">
                                             Location
                                         </p>
+
                                         <p className="mt-1 text-sm font-semibold leading-6 text-[#1B3F36] dark:text-[#F5F1E6]">
-                                            {[resource.location, resource.district, resource.province]
-                                                .filter(Boolean)
-                                                .join(", ") || "Not specified"}
+                                            {location || "Not specified"}
                                         </p>
                                     </div>
                                 </div>
 
+                                {/* CAPACITY */}
                                 {resource.capacity != null && (
                                     <div className="flex items-start gap-4 border-b border-[#1B3F36]/10 py-5 dark:border-white/10">
                                         <div className="rounded-xl bg-[#F5F1E6] p-3 dark:bg-[#20332B]">
-                                            <Users size={20} className="text-[#8B4A33]" />
+                                            <Users
+                                                size={20}
+                                                className="text-[#8B4A33]"
+                                            />
                                         </div>
 
                                         <div>
                                             <p className="text-xs font-medium text-[#7B857F] dark:text-[#B9C5BE]">
                                                 Capacity
                                             </p>
+
                                             <p className="mt-1 text-sm font-semibold text-[#1B3F36] dark:text-[#F5F1E6]">
                                                 Up to {resource.capacity} people
                                             </p>
@@ -219,30 +274,40 @@ function ResourceDetailPage() {
                                     </div>
                                 )}
 
+                                {/* CATEGORY */}
                                 <div className="flex items-start gap-4 border-b border-[#1B3F36]/10 py-5 dark:border-white/10">
                                     <div className="rounded-xl bg-[#F5F1E6] p-3 dark:bg-[#20332B]">
-                                        <Tag size={20} className="text-[#8B4A33]" />
+                                        <Tag
+                                            size={20}
+                                            className="text-[#8B4A33]"
+                                        />
                                     </div>
 
                                     <div>
                                         <p className="text-xs font-medium text-[#7B857F] dark:text-[#B9C5BE]">
                                             Category
                                         </p>
+
                                         <p className="mt-1 text-sm font-semibold text-[#1B3F36] dark:text-[#F5F1E6]">
-                                            {resource.category}
+                                            {resource.category || "Not specified"}
                                         </p>
                                     </div>
                                 </div>
 
+                                {/* PRICING */}
                                 <div className="flex items-start gap-4 py-5">
                                     <div className="rounded-xl bg-[#F5F1E6] p-3 dark:bg-[#20332B]">
-                                        <CalendarDays size={20} className="text-[#8B4A33]" />
+                                        <CalendarDays
+                                            size={20}
+                                            className="text-[#8B4A33]"
+                                        />
                                     </div>
 
                                     <div>
                                         <p className="text-xs font-medium text-[#7B857F] dark:text-[#B9C5BE]">
                                             Pricing
                                         </p>
+
                                         <p className="mt-1 text-lg font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
                                             {price}
                                         </p>
@@ -255,11 +320,20 @@ function ResourceDetailPage() {
 
                                 <div className="flex items-center gap-2">
                                     {isAvailable ? (
-                                        <CheckCircle2 size={18} className="text-[#1B3F36]" />
+                                        <CheckCircle2
+                                            size={18}
+                                            className="text-[#1B3F36]"
+                                        />
                                     ) : isUnavailable ? (
-                                        <XCircle size={18} className="text-[#8B4A33]" />
+                                        <XCircle
+                                            size={18}
+                                            className="text-[#8B4A33]"
+                                        />
                                     ) : (
-                                        <Clock size={18} className="text-[#8B4A33]" />
+                                        <Clock
+                                            size={18}
+                                            className="text-[#8B4A33]"
+                                        />
                                     )}
 
                                     <h3 className="text-sm font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
@@ -287,6 +361,7 @@ function ResourceDetailPage() {
                                     {isAvailable
                                         ? "Booking feature coming next"
                                         : "Currently unavailable"}
+
                                     <ArrowUpRight size={17} />
                                 </button>
                             </div>
@@ -296,15 +371,20 @@ function ResourceDetailPage() {
 
                 {/* AMENITIES */}
                 <section className="mt-10 rounded-3xl border border-[#1B3F36]/10 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#1A2923] sm:p-8">
+
                     <div className="flex items-center gap-4">
                         <div className="rounded-xl bg-[#F5F1E6] p-3 dark:bg-[#20332B]">
-                            <Sparkles size={22} className="text-[#8B4A33]" />
+                            <Sparkles
+                                size={22}
+                                className="text-[#8B4A33]"
+                            />
                         </div>
 
                         <div>
                             <h2 className="text-xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
                                 Amenities and facilities
                             </h2>
+
                             <p className="mt-1 text-sm text-[#59665F] dark:text-[#B9C5BE]">
                                 Facilities available at this space.
                             </p>
@@ -313,12 +393,16 @@ function ResourceDetailPage() {
 
                     {amenities.length > 0 ? (
                         <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                            {amenities.map((amenity) => (
+                            {amenities.map((amenity, index) => (
                                 <div
-                                    key={amenity}
+                                    key={`${amenity}-${index}`}
                                     className="flex items-center gap-3 rounded-xl border border-[#1B3F36]/10 bg-[#F5F1E6]/70 px-4 py-4 text-sm font-medium text-[#1B3F36] dark:border-white/10 dark:bg-[#20332B] dark:text-[#F5F1E6]"
                                 >
-                                    <CheckCircle2 size={17} className="shrink-0 text-[#8B4A33]" />
+                                    <CheckCircle2
+                                        size={17}
+                                        className="shrink-0 text-[#8B4A33]"
+                                    />
+
                                     {amenity}
                                 </div>
                             ))}

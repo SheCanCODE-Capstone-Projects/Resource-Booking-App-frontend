@@ -10,6 +10,7 @@ import ResourceDetailPage from "./pages/ResourceDetailPage";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 import Footer from "./components/Footer";
 
 function PlaceholderPage({ title }) {
@@ -54,25 +55,16 @@ function App() {
       }}
     >
       <div className="flex min-h-screen flex-col bg-surface-canvas text-text-primary transition-colors duration-200">
-
-        {/* NAVBAR */}
         <Navbar
           theme={theme}
           onToggleTheme={toggleTheme}
         />
 
-        {/* PAGE CONTENT */}
         <div className="flex-1">
           <Routes>
-            <Route
-              path="/"
-              element={<HomePage />}
-            />
+            <Route path="/" element={<HomePage />} />
 
-            <Route
-              path="/explore"
-              element={<ResourceListPage />}
-            />
+            <Route path="/explore" element={<ResourceListPage />} />
 
             <Route
               path="/resources/:id"
@@ -85,15 +77,17 @@ function App() {
             />
 
             <Route
-              path="/admin"
-              element={<PlaceholderPage title="Admin Dashboard" />}
-            />
-
-            <Route
               path="/login"
               element={<PlaceholderPage title="Login" />}
             />
 
+            {/* TEMPORARY LOCAL TEST ROUTE */}
+            <Route
+              path="/admin-preview"
+              element={<AdminDashboardPage />}
+            />
+
+            {/* /admin and unknown routes show Page Not Found */}
             <Route
               path="*"
               element={<PlaceholderPage title="Page Not Found" />}
@@ -101,9 +95,7 @@ function App() {
           </Routes>
         </div>
 
-        {/* GLOBAL FOOTER */}
         <Footer />
-
       </div>
     </BrowserRouter>
   );

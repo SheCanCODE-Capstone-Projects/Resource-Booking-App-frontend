@@ -1,14 +1,37 @@
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Building2, MapPin } from "lucide-react";
 
-import resources from "../data/resources";
+import {
+    getResources,
+    subscribeToResourceChanges,
+} from "../data/resourceStorage";
+
 import ResourceCard from "../components/ResourceCard";
 import FilterBar from "../components/FilterBar";
 
 function ResourceListPage() {
     const navigate = useNavigate();
+
+    const [resources, setResources] = useState(getResources);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Load resources and subscribe to catalogue changes.
+    useEffect(() => {
+        function refreshResources() {
+            setResources(getResources());
+        }
+
+        refreshResources();
+        setIsLoading(false);
+
+        const unsubscribe = subscribeToResourceChanges(
+            refreshResources
+        );
+
+        return unsubscribe;
+    }, []);
 
     // Filter states
     const [searchQuery, setSearchQuery] = useState("");
@@ -18,10 +41,12 @@ function ResourceListPage() {
         useState("All Provinces");
     const [selectedDistrict, setSelectedDistrict] =
         useState("All Districts");
-    const [selectedMinCapacity, setSelectedMinCapacity] = useState("");
-    const [selectedAmenities, setSelectedAmenities] = useState([]);
+    const [selectedMinCapacity, setSelectedMinCapacity] =
+        useState("");
+    const [selectedAmenities, setSelectedAmenities] =
+        useState([]);
 
-    // Filter resources based on all selected filters
+    // Filter the shared resource catalogue.
     const filteredResources = useMemo(() => {
         return resources.filter((resource) => {
             const searchText = searchQuery.trim().toLowerCase();
@@ -33,13 +58,16 @@ function ResourceListPage() {
                 resource.location,
                 resource.province,
                 resource.district,
-                ...(resource.amenities || []),
+                ...(Array.isArray(resource.amenities)
+                    ? resource.amenities
+                    : []),
             ]
                 .filter(Boolean)
                 .join(" ")
                 .toLowerCase();
 
-            const matchesSearch = searchableText.includes(searchText);
+            const matchesSearch =
+                searchableText.includes(searchText);
 
             const matchesCategory =
                 selectedCategory === "All Categories" ||
@@ -63,10 +91,12 @@ function ResourceListPage() {
                     Number(resource.capacity) >= capacity
                 );
 
-            const resourceAmenities = resource.amenities || [];
+            const resourceAmenities = Array.isArray(resource.amenities)
+                ? resource.amenities
+                : [];
 
-            const matchesAmenities = selectedAmenities.every((amenity) =>
-                resourceAmenities.includes(amenity)
+            const matchesAmenities = selectedAmenities.every(
+                (amenity) => resourceAmenities.includes(amenity)
             );
 
             return (
@@ -79,6 +109,7 @@ function ResourceListPage() {
             );
         });
     }, [
+        resources,
         searchQuery,
         selectedCategory,
         selectedProvince,
@@ -87,13 +118,11 @@ function ResourceListPage() {
         selectedAmenities,
     ]);
 
-    // Update province and reset district when province changes
     function handleProvinceChange(province) {
         setSelectedProvince(province);
         setSelectedDistrict("All Districts");
     }
 
-    // Reset every filter
     function resetFilters() {
         setSearchQuery("");
         setSelectedCategory("All Categories");
@@ -103,12 +132,10 @@ function ResourceListPage() {
         setSelectedAmenities([]);
     }
 
-    // Navigate to selected resource details
     function handleViewDetails(resource) {
         navigate(`/resources/${resource.id}`);
     }
 
-    // Check whether any filter is active
     const hasActiveFilters =
         searchQuery.trim() !== "" ||
         selectedCategory !== "All Categories" ||
@@ -128,7 +155,7 @@ function ResourceListPage() {
                         SPACE AND RESOURCE DISCOVERY
                     </div>
 
-                    <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-[#1B3F36] dark:text-[#F5F1E6] md:text-5xl">
+                    <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-[#1B3F36] dark:text-[#F5F1E6]">
                         Find the right space
                         <span className="block text-[#8B4A33]">
                             for what matters.
@@ -136,8 +163,8 @@ function ResourceListPage() {
                     </h1>
 
                     <p className="mt-5 max-w-2xl text-base leading-7 text-[#59665F] dark:text-[#B9C5BE]">
-                        Explore and discover study rooms, libraries, meeting spaces,
-                        restaurants, coworking areas, and event gardens.
+                        Explore and discover study rooms, libraries, meeting
+                        spaces, restaurants, coworking areas, and event gardens.
                         Find a space that works for you.
                     </p>
                 </section>
@@ -161,7 +188,6 @@ function ResourceListPage() {
 
                 {/* RESOURCE RESULTS */}
                 <section className="mt-10">
-
                     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
                         <div>
                             <h2 className="text-2xl font-bold tracking-tight text-[#1B3F36] dark:text-[#F5F1E6]">
@@ -172,11 +198,13 @@ function ResourceListPage() {
                                 Discover spaces that match your needs.
                             </p>
 
-                            {/* SELECTED LOCATION */}
                             {(selectedProvince !== "All Provinces" ||
                                 selectedDistrict !== "All Districts") && (
                                     <div className="mt-3 flex items-center gap-2 text-sm text-[#1B3F36] dark:text-[#F5F1E6]">
-                                        <MapPin size={15} className="text-[#8B4A33]" />
+                                        <MapPin
+                                            size={15}
+                                            className="text-[#8B4A33]"
+                                        />
 
                                         <span>
                                             {selectedProvince !== "All Provinces"
@@ -211,8 +239,31 @@ function ResourceListPage() {
                         </div>
                     </div>
 
-                    {/* RESOURCE GRID */}
-                    {filteredResources.length > 0 ? (
+                    {/* LOADING STATE */}
+                    {isLoading ? (
+                        <div
+                            role="status"
+                            aria-live="polite"
+                            className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3"
+                        >
+                            {[1, 2, 3].map((item) => (
+                                <div
+                                    key={item}
+                                    className="animate-pulse overflow-hidden rounded-2xl border border-[#1B3F36]/10 bg-white dark:border-[#F5F1E6]/10 dark:bg-[#1A2923]"
+                                >
+                                    <div className="h-52 bg-[#EAE3D3] dark:bg-[#20332B]" />
+
+                                    <div className="space-y-3 p-5">
+                                        <div className="h-4 w-2/3 rounded bg-[#EAE3D3] dark:bg-[#20332B]" />
+                                        <div className="h-3 w-1/2 rounded bg-[#EAE3D3] dark:bg-[#20332B]" />
+                                        <div className="h-10 rounded bg-[#EAE3D3] dark:bg-[#20332B]" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : filteredResources.length > 0 ? (
+
+                        /* RESOURCE GRID */
                         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                             {filteredResources.map((resource) => (
                                 <ResourceCard
@@ -223,6 +274,7 @@ function ResourceListPage() {
                             ))}
                         </div>
                     ) : (
+
                         /* EMPTY STATE */
                         <div
                             role="status"
@@ -239,9 +291,9 @@ function ResourceListPage() {
                             </h3>
 
                             <p className="mt-2 text-sm text-[#59665F] dark:text-[#B9C5BE]">
-                                We couldn't find resources matching your selected
-                                filters. Try changing your search, capacity,
-                                amenities, or location.
+                                We couldn't find resources matching your
+                                selected filters. Try changing your search,
+                                capacity, amenities, or location.
                             </p>
 
                             <button
