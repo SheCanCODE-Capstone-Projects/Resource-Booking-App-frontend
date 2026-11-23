@@ -265,7 +265,7 @@ const resources = [
         district: "Kicukiro",
         capacity: 18,
         status: "Available",
-        price: "RWF 12,000/hour",
+        price: "RWF 12 ,000/hour",
         description: "A shared lounge designed for networking and productive work.",
         image: "/images/community-work-lounge.jpg",
     },
