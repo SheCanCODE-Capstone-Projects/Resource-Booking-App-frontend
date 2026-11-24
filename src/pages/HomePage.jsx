@@ -1,5 +1,6 @@
 
 import { Link } from "react-router-dom";
+
 import {
     ArrowRight,
     BookOpen,
@@ -19,7 +20,14 @@ import {
     UserRound,
 } from "lucide-react";
 
-import Footer from "../components/Footer";
+/* SPACESYNC BRAND IDENTITY */
+const LOGO_SRC = "/images/logo.png";
+
+const BRAND = {
+    green: "#1B3F36",
+    rust: "#8B4A33",
+    cream: "#F5F1E6",
+};
 
 const resourceTypes = [
     {
@@ -91,15 +99,16 @@ function HomePage() {
             {/* HERO SECTION */}
             <section className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-16 md:py-24 lg:grid-cols-2 lg:px-8">
 
+                {/* HERO CONTENT */}
                 <div>
-                    <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-xs font-semibold text-text-secondary">
-                        <span className="h-2 w-2 rounded-full bg-text-primary" />
+                    <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#8B4A33]/40 px-4 py-2 text-xs font-semibold text-[#8B4A33]">
+                        <span className="h-2 w-2 rounded-full bg-[#8B4A33]" />
                         YOUR SPACE. YOUR TIME.
                     </div>
 
                     <h1 className="max-w-2xl text-5xl font-bold leading-tight tracking-tight text-text-primary md:text-6xl lg:text-7xl">
                         Find your space.
-                        <span className="block text-text-secondary">
+                        <span className="block text-[#8B4A33]">
                             Make it happen.
                         </span>
                     </h1>
@@ -113,7 +122,7 @@ function HomePage() {
                     <div className="mt-9 flex flex-wrap gap-4">
                         <Link
                             to="/explore"
-                            className="inline-flex items-center gap-3 rounded-lg bg-brand-primary px-7 py-4 text-sm font-semibold text-white transition hover:bg-brand-hover dark:text-black"
+                            className="inline-flex items-center gap-3 rounded-lg bg-[#1B3F36] px-7 py-4 text-sm font-semibold text-white transition hover:bg-[#14302A]"
                         >
                             Explore spaces
                             <ArrowRight size={18} />
@@ -121,15 +130,18 @@ function HomePage() {
 
                         <a
                             href="#how-it-works"
-                            className="inline-flex items-center rounded-lg border border-border px-7 py-4 text-sm font-semibold text-text-primary transition hover:bg-surface-muted"
+                            className="inline-flex items-center rounded-lg border border-[#1B3F36] px-7 py-4 text-sm font-semibold text-[#1B3F36] transition hover:bg-[#F5F1E6] dark:border-[#F5F1E6] dark:text-[#F5F1E6] dark:hover:bg-white/10"
                         >
                             How it works
                         </a>
                     </div>
 
+                    {/* PLATFORM HIGHLIGHTS */}
                     <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-border pt-7">
                         <div>
-                            <p className="text-2xl font-bold text-text-primary">6+</p>
+                            <p className="text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
+                                6+
+                            </p>
                             <p className="mt-1 text-xs text-text-secondary">
                                 Resource categories
                             </p>
@@ -138,7 +150,9 @@ function HomePage() {
                         <div className="h-10 w-px bg-border" />
 
                         <div>
-                            <p className="text-2xl font-bold text-text-primary">One</p>
+                            <p className="text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
+                                One
+                            </p>
                             <p className="mt-1 text-xs text-text-secondary">
                                 Booking platform
                             </p>
@@ -147,7 +161,9 @@ function HomePage() {
                         <div className="h-10 w-px bg-border" />
 
                         <div>
-                            <p className="text-2xl font-bold text-text-primary">Your</p>
+                            <p className="text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
+                                Your
+                            </p>
                             <p className="mt-1 text-xs text-text-secondary">
                                 Time and convenience
                             </p>
@@ -164,10 +180,10 @@ function HomePage() {
                             className="h-full w-full object-cover"
                         />
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1B3F36]/85 via-black/10 to-transparent" />
 
                         <div className="absolute bottom-0 left-0 right-0 p-7 text-white md:p-10">
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/75">
+                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F5F1E6]/80">
                                 Spaces made simple
                             </p>
 
@@ -181,26 +197,11 @@ function HomePage() {
 
                             <Link
                                 to="/explore"
-                                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-bold text-black transition hover:bg-neutral-200"
+                                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#F5F1E6] px-5 py-3 text-sm font-bold text-[#1B3F36] transition hover:bg-white"
                             >
                                 Discover spaces
                                 <ArrowRight size={17} />
                             </Link>
-                        </div>
-                    </div>
-
-                    <div className="absolute -bottom-5 -left-4 hidden items-center gap-3 rounded-xl border border-border bg-surface-card p-4 shadow-lg sm:flex">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-primary text-white dark:text-black">
-                            <CalendarCheck size={21} />
-                        </div>
-
-                        <div>
-                            <p className="text-sm font-bold text-text-primary">
-                                Your next reservation
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                                Starts with SpaceSync
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -211,13 +212,13 @@ function HomePage() {
                 <div className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
 
                     <div className="max-w-2xl">
-                        <p className="text-xs font-bold uppercase tracking-widest text-text-secondary">
+                        <p className="text-xs font-bold uppercase tracking-widest text-[#8B4A33]">
                             Explore possibilities
                         </p>
 
                         <h2 className="mt-4 text-3xl font-bold tracking-tight text-text-primary md:text-4xl">
                             One platform.
-                            <span className="block text-text-secondary">
+                            <span className="block text-[#8B4A33]">
                                 Different spaces for every need.
                             </span>
                         </h2>
@@ -246,9 +247,9 @@ function HomePage() {
                                             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                                         />
 
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#1B3F36]/70 to-transparent" />
 
-                                        <div className="absolute bottom-4 left-5 flex h-11 w-11 items-center justify-center rounded-xl bg-white text-black">
+                                        <div className="absolute bottom-4 left-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F1E6] text-[#1B3F36]">
                                             <Icon size={22} />
                                         </div>
                                     </div>
@@ -262,7 +263,7 @@ function HomePage() {
                                             {resource.description}
                                         </p>
 
-                                        <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-text-primary">
+                                        <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-[#8B4A33]">
                                             Explore category
                                             <ArrowRight
                                                 size={16}
@@ -283,7 +284,7 @@ function HomePage() {
                 className="mx-auto max-w-7xl px-5 py-20 lg:px-8"
             >
                 <div className="mx-auto max-w-2xl text-center">
-                    <p className="text-xs font-bold uppercase tracking-widest text-text-secondary">
+                    <p className="text-xs font-bold uppercase tracking-widest text-[#8B4A33]">
                         Simple process
                     </p>
 
@@ -304,11 +305,11 @@ function HomePage() {
                         return (
                             <div key={step.number}>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-4xl font-bold tracking-tight text-text-secondary opacity-40">
+                                    <span className="text-4xl font-bold tracking-tight text-[#8B4A33] opacity-50">
                                         {step.number}
                                     </span>
 
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-muted text-text-primary">
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1B3F36] text-[#F5F1E6]">
                                         <Icon size={23} />
                                     </div>
                                 </div>
@@ -326,28 +327,40 @@ function HomePage() {
                 </div>
             </section>
 
-            {/* FINAL CTA WITH PHONE DASHBOARD */}
-            <section className="mx-5 mb-16 overflow-hidden rounded-3xl bg-brand-primary px-6 py-14 text-white dark:text-black md:mx-8 md:px-12 lg:px-16">
+            {/* FINAL CTA */}
+            <section className="mx-5 mb-16 overflow-hidden rounded-3xl bg-[#1B3F36] px-6 py-14 text-white md:mx-8 md:px-12 lg:px-16">
                 <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2">
 
-                    {/* CTA TEXT */}
+                    {/* CTA CONTENT */}
                     <div className="max-w-xl">
-                        <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-70">
-                            Your space is waiting
-                        </p>
 
-                        <h2 className="mt-5 text-3xl font-bold tracking-tight md:text-5xl">
+                        {/* SMALL BRAND LOGO */}
+                        <div className="mb-6 flex items-center gap-3">
+                            <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-[#F5F1E6] p-1">
+                                <img
+                                    src={LOGO_SRC}
+                                    alt="SpaceSync logo"
+                                    className="h-full w-full object-contain"
+                                />
+                            </div>
+
+                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#F5F1E6]/80">
+                                Your space is waiting
+                            </p>
+                        </div>
+
+                        <h2 className="text-3xl font-bold tracking-tight md:text-5xl">
                             Ready to find your space?
                         </h2>
 
-                        <p className="mt-5 max-w-lg leading-7 opacity-75">
+                        <p className="mt-5 max-w-lg leading-7 text-[#F5F1E6]/75">
                             Discover amazing spaces, check availability and manage
                             your reservations — all from one simple platform.
                         </p>
 
                         <Link
                             to="/explore"
-                            className="mt-8 inline-flex items-center gap-3 rounded-lg bg-white px-7 py-4 text-sm font-bold text-black transition hover:bg-neutral-200 dark:bg-black dark:text-white dark:hover:bg-neutral-800"
+                            className="mt-8 inline-flex items-center gap-3 rounded-lg bg-[#F5F1E6] px-7 py-4 text-sm font-bold text-[#1B3F36] transition hover:bg-white"
                         >
                             Explore spaces
                             <ArrowRight size={18} />
@@ -356,9 +369,9 @@ function HomePage() {
 
                     {/* PHONE MOCKUP */}
                     <div className="flex justify-center lg:justify-end">
-                        <div className="w-[270px] rotate-2 rounded-[2.8rem] border-[7px] border-neutral-800 bg-neutral-950 p-2 shadow-2xl transition duration-500 hover:rotate-0">
+                        <div className="w-[270px] rotate-2 rounded-[2.8rem] border-[7px] border-black bg-neutral-950 p-2 shadow-2xl transition duration-500 hover:rotate-0">
 
-                            <div className="overflow-hidden rounded-[2.2rem] bg-white text-neutral-900">
+                            <div className="overflow-hidden rounded-[2.2rem] bg-[#F5F1E6] text-neutral-900">
 
                                 {/* STATUS BAR */}
                                 <div className="flex items-center justify-between px-5 pt-3 text-[10px] font-bold">
@@ -370,24 +383,33 @@ function HomePage() {
                                 {/* DASHBOARD HEADER */}
                                 <div className="px-4 pt-6">
                                     <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-xs text-neutral-500">
-                                                Welcome back
-                                            </p>
-                                            <h3 className="mt-1 text-lg font-bold">
-                                                Your bookings
-                                            </h3>
+                                        <div className="flex items-center gap-2">
+                                            <img
+                                                src={LOGO_SRC}
+                                                alt="SpaceSync logo"
+                                                className="h-10 w-10 object-contain"
+                                            />
+
+                                            <div>
+                                                <p className="text-xs text-[#8B4A33]">
+                                                    Welcome back
+                                                </p>
+
+                                                <h3 className="mt-0.5 text-lg font-bold text-[#1B3F36]">
+                                                    Your bookings
+                                                </h3>
+                                            </div>
                                         </div>
 
-                                        <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-neutral-100">
-                                            <Bell size={17} />
-                                            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-black" />
+                                        <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-white">
+                                            <Bell size={17} className="text-[#1B3F36]" />
+                                            <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#8B4A33]" />
                                         </div>
                                     </div>
 
                                     {/* SEARCH */}
-                                    <div className="mt-5 flex items-center gap-2 rounded-xl bg-neutral-100 px-3 py-3">
-                                        <Search size={15} className="text-neutral-500" />
+                                    <div className="mt-5 flex items-center gap-2 rounded-xl bg-white px-3 py-3">
+                                        <Search size={15} className="text-[#8B4A33]" />
                                         <span className="text-[10px] text-neutral-500">
                                             Search for a space...
                                         </span>
@@ -396,16 +418,16 @@ function HomePage() {
                                     {/* UPCOMING BOOKING */}
                                     <div className="mt-5">
                                         <div className="flex items-center justify-between">
-                                            <p className="text-xs font-bold">
+                                            <p className="text-xs font-bold text-[#1B3F36]">
                                                 Upcoming reservation
                                             </p>
 
-                                            <span className="rounded-full bg-neutral-100 px-2 py-1 text-[9px] font-semibold">
+                                            <span className="rounded-full bg-[#1B3F36] px-2 py-1 text-[9px] font-semibold text-[#F5F1E6]">
                                                 Confirmed
                                             </span>
                                         </div>
 
-                                        <div className="mt-3 overflow-hidden rounded-xl border border-neutral-200">
+                                        <div className="mt-3 overflow-hidden rounded-xl border border-[#8B4A33]/30 bg-white">
                                             <img
                                                 src="/images/study.jpg"
                                                 alt="Study room reservation"
@@ -413,22 +435,22 @@ function HomePage() {
                                             />
 
                                             <div className="p-3">
-                                                <h4 className="text-sm font-bold">
+                                                <h4 className="text-sm font-bold text-[#1B3F36]">
                                                     Study Room A1
                                                 </h4>
 
                                                 <div className="mt-3 flex items-center gap-2 text-[10px] text-neutral-500">
-                                                    <CalendarDays size={13} />
+                                                    <CalendarDays size={13} className="text-[#8B4A33]" />
                                                     <span>Today · 2:00 PM</span>
                                                 </div>
 
                                                 <div className="mt-2 flex items-center gap-2 text-[10px] text-neutral-500">
-                                                    <Clock3 size={13} />
+                                                    <Clock3 size={13} className="text-[#8B4A33]" />
                                                     <span>2 hours</span>
                                                 </div>
 
                                                 <div className="mt-2 flex items-center gap-2 text-[10px] text-neutral-500">
-                                                    <MapPin size={13} />
+                                                    <MapPin size={13} className="text-[#8B4A33]" />
                                                     <span>Kigali, Rwanda</span>
                                                 </div>
                                             </div>
@@ -437,26 +459,26 @@ function HomePage() {
 
                                     {/* QUICK ACTIONS */}
                                     <div className="mt-5">
-                                        <p className="text-xs font-bold">
+                                        <p className="text-xs font-bold text-[#1B3F36]">
                                             Quick actions
                                         </p>
 
                                         <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                                            <div className="rounded-xl bg-neutral-100 p-3">
+                                            <div className="rounded-xl bg-[#1B3F36] p-3 text-[#F5F1E6]">
                                                 <CalendarCheck size={18} className="mx-auto" />
                                                 <p className="mt-2 text-[9px] font-semibold">
                                                     Book
                                                 </p>
                                             </div>
 
-                                            <div className="rounded-xl bg-neutral-100 p-3">
+                                            <div className="rounded-xl bg-white p-3 text-[#8B4A33]">
                                                 <Bookmark size={18} className="mx-auto" />
                                                 <p className="mt-2 text-[9px] font-semibold">
                                                     Saved
                                                 </p>
                                             </div>
 
-                                            <div className="rounded-xl bg-neutral-100 p-3">
+                                            <div className="rounded-xl bg-white p-3 text-[#8B4A33]">
                                                 <UserRound size={18} className="mx-auto" />
                                                 <p className="mt-2 text-[9px] font-semibold">
                                                     Profile
@@ -467,11 +489,11 @@ function HomePage() {
                                 </div>
 
                                 {/* PHONE BOTTOM NAVIGATION */}
-                                <div className="mt-6 flex justify-around border-t border-neutral-200 px-3 py-4 text-neutral-500">
+                                <div className="mt-6 flex justify-around border-t border-[#8B4A33]/20 px-3 py-4 text-[#1B3F36]">
                                     <Home size={17} />
-                                    <Search size={17} />
-                                    <CalendarDays size={17} />
-                                    <UserRound size={17} />
+                                    <Search size={17} className="text-[#8B4A33]" />
+                                    <CalendarDays size={17} className="text-[#8B4A33]" />
+                                    <UserRound size={17} className="text-[#8B4A33]" />
                                 </div>
                             </div>
                         </div>

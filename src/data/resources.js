@@ -9,9 +9,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 8,
+        amenities: ["Wi-Fi", "Whiteboard", "Power outlets"],
         status: "Available",
-        price: " Rwf 20,000/hour",
-        description: "A quiet, modern room designed for focused individual and group study.",
+        price: "RWF 20,000/hour",
+        description:
+            "A quiet, modern room designed for focused individual and group study.",
         image: "/images/innovation-study-room.jpg",
     },
     {
@@ -22,9 +24,11 @@ const resources = [
         province: "City of Kigali",
         district: "Kicukiro",
         capacity: 20,
+        amenities: ["Wi-Fi", "Computers", "Projector", "Power outlets"],
         status: "Available",
         price: "Free",
-        description: "A technology-equipped learning space for practical sessions and collaboration.",
+        description:
+            "A technology-equipped learning space for practical sessions and collaboration.",
         image: "/images/digital-learning-lab.jpg",
     },
     {
@@ -35,9 +39,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 12,
+        amenities: ["Wi-Fi", "Whiteboard", "Projector"],
         status: "Not Available",
-        price: " Rwf 10,000//hour",
-        description: "A collaborative room for group discussions, teamwork and presentations.",
+        price: "RWF 10,000/hour",
+        description:
+            "A collaborative room for group discussions, teamwork and presentations.",
         image: "/images/group-discussion-room.jpg",
     },
     {
@@ -48,9 +54,11 @@ const resources = [
         province: "City of Kigali",
         district: "Kicukiro",
         capacity: 10,
+        amenities: ["Wi-Fi", "Reading desks", "Power outlets"],
         status: "Available",
         price: "Free",
-        description: "A peaceful reading space for students who need a distraction-free environment.",
+        description:
+            "A peaceful reading space for students who need a distraction-free environment.",
         image: "/images/quiet-reading-room.jpg",
     },
 
@@ -63,9 +71,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 20,
+        amenities: ["Wi-Fi", "Reading desks", "Air conditioning"],
         status: "Available",
         price: "Free",
-        description: "A welcoming reading area for individuals and small study groups.",
+        description:
+            "A welcoming reading area for individuals and small study groups.",
         image: "/images/community-reading-space.jpg",
     },
     {
@@ -76,9 +86,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 15,
+        amenities: ["Wi-Fi", "Computers", "Printer"],
         status: "Available",
         price: "Free",
-        description: "A dedicated research space for digital learning and academic work.",
+        description:
+            "A dedicated research space for digital learning and academic work.",
         image: "/images/digital-research-room.jpg",
     },
     {
@@ -89,9 +101,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 4,
+        amenities: ["Wi-Fi", "Reading desk", "Power outlet"],
         status: "Not Available",
         price: "Free",
-        description: "A private reading booth for quiet and independent work.",
+        description:
+            "A private reading booth for quiet and independent work.",
         image: "/images/private-reading-booth.jpg",
     },
     {
@@ -102,9 +116,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 10,
+        amenities: ["Wi-Fi", "Projector", "Whiteboard"],
         status: "Available",
         price: "Free",
-        description: "A meeting room for academic discussions and collaborative research.",
+        description:
+            "A meeting room for academic discussions and collaborative research.",
         image: "/images/library-conference-room.jpg",
     },
 
@@ -117,9 +133,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 16,
+        amenities: ["Wi-Fi", "Air conditioning", "Private seating"],
         status: "Available",
         price: "RWF 40,000/hour",
-        description: "A private dining room for intimate gatherings and special occasions.",
+        description:
+            "A private dining room for intimate gatherings and special occasions.",
         image: "/images/private-dining-room.jpg",
     },
     {
@@ -130,9 +148,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 24,
+        amenities: ["Outdoor seating", "Garden view", "Wi-Fi"],
         status: "Available",
         price: "RWF 50,000/hour",
-        description: "An outdoor dining terrace for relaxed meals and social gatherings.",
+        description:
+            "An outdoor dining terrace for relaxed meals and social gatherings.",
         image: "/images/garden-dining-terrace.jpg",
     },
     {
@@ -143,9 +163,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 12,
+        amenities: ["Wi-Fi", "Air conditioning", "Private seating"],
         status: "Not Available",
         price: "RWF 60,000/hour",
-        description: "An elegant private dining space for professional and executive gatherings.",
+        description:
+            "An elegant private dining space for professional and executive gatherings.",
         image: "/images/executive-dining-suite.jpg",
     },
     {
@@ -156,9 +178,11 @@ const resources = [
         province: "City of Kigali",
         district: "Kicukiro",
         capacity: 20,
+        amenities: ["Family seating", "Outdoor access", "Wi-Fi"],
         status: "Available",
         price: "RWF 35,000/hour",
-        description: "A comfortable dining area for family meals and group celebrations.",
+        description:
+            "A comfortable dining area for family meals and group celebrations.",
         image: "/images/family-dining-space.jpg",
     },
 
@@ -171,9 +195,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 12,
+        amenities: ["Wi-Fi", "Projector", "Whiteboard"],
         status: "Available",
         price: "RWF 25,000/hour",
-        description: "A professional meeting room for business discussions and presentations.",
+        description:
+            "A professional meeting room for business discussions and presentations.",
         image: "/images/executive-meeting-room.jpg",
     },
     {
@@ -184,9 +210,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 20,
+        amenities: ["Wi-Fi", "Conference screen", "Video conferencing"],
         status: "Available",
         price: "RWF 45,000/hour",
-        description: "A spacious boardroom for strategic meetings and executive sessions.",
+        description:
+            "A spacious boardroom for strategic meetings and executive sessions.",
         image: "/images/boardroom-suite.jpg",
     },
     {
@@ -197,9 +225,11 @@ const resources = [
         province: "City of Kigali",
         district: "Nyarugenge",
         capacity: 6,
+        amenities: ["Wi-Fi", "Desk", "Printer"],
         status: "Not Available",
         price: "RWF 30,000/hour",
-        description: "A private office for focused work and confidential business meetings.",
+        description:
+            "A private office for focused work and confidential business meetings.",
         image: "/images/private-office-suite.jpg",
     },
     {
@@ -210,9 +240,11 @@ const resources = [
         province: "City of Kigali",
         district: "Nyarugenge",
         capacity: 50,
+        amenities: ["Wi-Fi", "Projector", "Sound system"],
         status: "Available",
         price: "RWF 100,000/day",
-        description: "A large conference venue for workshops, seminars and business events.",
+        description:
+            "A large conference venue for workshops, seminars and business events.",
         image: "/images/conference-hall.jpg",
     },
 
@@ -225,9 +257,11 @@ const resources = [
         province: "City of Kigali",
         district: "Nyarugenge",
         capacity: 10,
+        amenities: ["Wi-Fi", "Whiteboard", "Power outlets"],
         status: "Available",
         price: "RWF 10,000/hour",
-        description: "A creative workspace for entrepreneurs, freelancers and teams.",
+        description:
+            "A creative workspace for entrepreneurs, freelancers and teams.",
         image: "/images/creative-collaboration-hub.jpg",
     },
     {
@@ -238,9 +272,11 @@ const resources = [
         province: "City of Kigali",
         district: "Nyarugenge",
         capacity: 25,
+        amenities: ["Wi-Fi", "Shared desks", "Power outlets"],
         status: "Available",
         price: "RWF 8,000/hour",
-        description: "An open and flexible workspace for independent professionals.",
+        description:
+            "An open and flexible workspace for independent professionals.",
         image: "/images/open-workspace.jpg",
     },
     {
@@ -251,9 +287,11 @@ const resources = [
         province: "City of Kigali",
         district: "Kicukiro",
         capacity: 6,
+        amenities: ["Wi-Fi", "Video conferencing", "Whiteboard"],
         status: "Not Available",
         price: "RWF 15,000/hour",
-        description: "A compact meeting pod for startup teams and brainstorming sessions.",
+        description:
+            "A compact meeting pod for startup teams and brainstorming sessions.",
         image: "/images/startup-meeting-pod.jpg",
     },
     {
@@ -264,9 +302,11 @@ const resources = [
         province: "City of Kigali",
         district: "Kicukiro",
         capacity: 18,
+        amenities: ["Wi-Fi", "Shared desks", "Lounge seating"],
         status: "Available",
-        price: "RWF 12 ,000/hour",
-        description: "A shared lounge designed for networking and productive work.",
+        price: "RWF 12,000/hour",
+        description:
+            "A shared lounge designed for networking and productive work.",
         image: "/images/community-work-lounge.jpg",
     },
 
@@ -279,9 +319,11 @@ const resources = [
         province: "City of Kigali",
         district: "Gasabo",
         capacity: 100,
+        amenities: ["Outdoor seating", "Garden view", "Parking"],
         status: "Available",
         price: "RWF 150,000/day",
-        description: "An outdoor garden venue for celebrations and social events.",
+        description:
+            "An outdoor garden venue for celebrations and social events.",
         image: "/images/garden-event-venue.jpg",
     },
     {
@@ -292,9 +334,11 @@ const resources = [
         province: "Western Province",
         district: "Rubavu",
         capacity: 80,
+        amenities: ["Lakeside view", "Outdoor seating", "Parking"],
         status: "Available",
         price: "RWF 180,000/day",
-        description: "A scenic outdoor venue for memorable lakeside celebrations.",
+        description:
+            "A scenic outdoor venue for memorable lakeside celebrations.",
         image: "/images/lakeside-celebration-garden.jpg",
     },
     {
@@ -305,9 +349,11 @@ const resources = [
         province: "City of Kigali",
         district: "Kicukiro",
         capacity: 150,
+        amenities: ["Garden view", "Event lighting", "Parking"],
         status: "Not Available",
         price: "RWF 250,000/day",
-        description: "A private garden venue for weddings and large celebrations.",
+        description:
+            "A private garden venue for weddings and large celebrations.",
         image: "/images/private-wedding-garden.jpg",
     },
     {
@@ -318,13 +364,13 @@ const resources = [
         province: "City of Kigali",
         district: "Nyarugenge",
         capacity: 60,
+        amenities: ["Outdoor seating", "Projector", "Sound system"],
         status: "Available",
         price: "RWF 120,000/day",
-        description: "An outdoor venue for conferences, workshops and networking events.",
+        description:
+            "An outdoor venue for conferences, workshops and networking events.",
         image: "/images/outdoor-conference-garden.jpg",
     },
 ];
 
 export default resources;
-
-
