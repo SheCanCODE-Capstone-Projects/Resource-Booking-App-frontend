@@ -12,6 +12,7 @@ import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import Footer from "./components/Footer";
+import MyReservationsPage from "./pages/MyReservationsPage";
 
 function PlaceholderPage({ title }) {
   return (
@@ -72,9 +73,10 @@ function App() {
             />
 
             <Route
-              path="/my-reservations"
-              element={<PlaceholderPage title="My Reservations" />}
-            />
+              
+  path="/my-reservations"
+  element={<MyReservationsPage />}
+/>
 
             <Route
               path="/login"
