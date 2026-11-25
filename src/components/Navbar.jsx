@@ -105,18 +105,31 @@ function Navbar({ theme, onToggleTheme }) {
                         <Bell size={20} />
                     </button>
 
-                    <button
-                        type="button"
-                        aria-label="User profile"
-                        className="flex h-10 w-10 items-center justify-center rounded-full border border-[#1B3F36]/20 bg-white text-[#1B3F36] transition hover:border-[#8B4A33] dark:border-white/20 dark:bg-[#1B3F36] dark:text-[#F5F1E6]"
+                    {/* LOGIN ICON */}
+                    <Link
+                        to="/login"
+                        aria-label="Login"
+                        title="Login"
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-[#1B3F36]/20 bg-white text-[#1B3F36] transition hover:border-[#8B4A33] hover:bg-[#8B4A33] hover:text-white dark:border-white/20 dark:bg-[#1B3F36] dark:text-[#F5F1E6]"
                     >
                         <UserRound size={19} />
-                    </button>
+                    </Link>
 
                 </div>
 
                 {/* MOBILE ACTIONS */}
                 <div className="flex items-center gap-2 md:hidden">
+
+                    {/* MOBILE LOGIN ICON */}
+                    <Link
+                        to="/login"
+                        aria-label="Login"
+                        title="Login"
+                        onClick={() => setMenuOpen(false)}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-[#1B3F36]/20 bg-white text-[#1B3F36] transition hover:border-[#8B4A33] hover:bg-[#8B4A33] hover:text-white dark:border-white/20 dark:bg-[#1B3F36] dark:text-[#F5F1E6]"
+                    >
+                        <UserRound size={19} />
+                    </Link>
 
                     <button
                         type="button"

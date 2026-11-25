@@ -6,11 +6,15 @@ import {
   Route,
 } from "react-router-dom";
 
+import { AuthProvider } from "./context/AuthContext";
+
 import ResourceDetailPage from "./pages/ResourceDetailPage";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import Footer from "./components/Footer";
 
 function PlaceholderPage({ title }) {
@@ -48,56 +52,80 @@ function App() {
   }
 
   return (
-    <BrowserRouter
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
-      <div className="flex min-h-screen flex-col bg-surface-canvas text-text-primary transition-colors duration-200">
-        <Navbar
-          theme={theme}
-          onToggleTheme={toggleTheme}
-        />
+    <AuthProvider>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
+        <div className="flex min-h-screen flex-col bg-surface-canvas text-text-primary transition-colors duration-200">
+          <Navbar
+            theme={theme}
+            onToggleTheme={toggleTheme}
+          />
 
-        <div className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
+          <div className="flex-1">
+            <Routes>
+              {/* HOME */}
+              <Route
+                path="/"
+                element={<HomePage />}
+              />
 
-            <Route path="/explore" element={<ResourceListPage />} />
+              {/* RESOURCE DISCOVERY */}
+              <Route
+                path="/explore"
+                element={<ResourceListPage />}
+              />
 
-            <Route
-              path="/resources/:id"
-              element={<ResourceDetailPage />}
-            />
+              {/* RESOURCE DETAILS */}
+              <Route
+                path="/resources/:id"
+                element={<ResourceDetailPage />}
+              />
 
-            <Route
-              path="/my-reservations"
-              element={<PlaceholderPage title="My Reservations" />}
-            />
+              {/* AUTHENTICATION */}
+              <Route
+                path="/login"
+                element={<LoginPage />}
+              />
 
-            <Route
-              path="/login"
-              element={<PlaceholderPage title="Login" />}
-            />
+              <Route
+                path="/register"
+                element={<RegisterPage />}
+              />
 
-            {/* TEMPORARY LOCAL TEST ROUTE */}
-            <Route
-              path="/admin-preview"
-              element={<AdminDashboardPage />}
-            />
+              {/* USER PROFILE */}
+              <Route
+                path="/profile"
+                element={<PlaceholderPage title="My Profile" />}
+              />
 
-            {/* /admin and unknown routes show Page Not Found */}
-            <Route
-              path="*"
-              element={<PlaceholderPage title="Page Not Found" />}
-            />
-          </Routes>
+              {/* RESERVATIONS */}
+              <Route
+                path="/my-reservations"
+                element={<PlaceholderPage title="My Reservations" />}
+              />
+
+              {/* TEMPORARY LOCAL ADMIN TEST ROUTE */}
+              <Route
+                path="/admin-preview"
+                element={<AdminDashboardPage />}
+              />
+
+              {/* PAGE NOT FOUND */}
+              <Route
+                path="*"
+                element={<PlaceholderPage title="Page Not Found" />}
+              />
+            </Routes>
+          </div>
+
+          <Footer />
         </div>
-
-        <Footer />
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
