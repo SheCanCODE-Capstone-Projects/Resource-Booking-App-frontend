@@ -9,8 +9,10 @@ import {
 const AuthContext = createContext(null);
 
 const STORAGE_KEY = "spacesync-auth-user";
+const DEMO_ADMIN_EMAIL = "admin@spacesync.com";
 
 export function AuthProvider({ children }) {
+    // Restore the saved user session.
     const [user, setUser] = useState(() => {
         try {
             const savedUser = localStorage.getItem(STORAGE_KEY);
@@ -23,7 +25,7 @@ export function AuthProvider({ children }) {
 
     const [loading, setLoading] = useState(false);
 
-    // Save the current user session.
+    // Save or remove the current session.
     useEffect(() => {
         try {
             if (user) {
@@ -45,7 +47,9 @@ export function AuthProvider({ children }) {
 
         try {
             if (!email?.trim() || !password) {
-                throw new Error("Email and password are required.");
+                throw new Error(
+                    "Email and password are required."
+                );
             }
 
             const normalizedEmail = email.trim().toLowerCase();
@@ -54,7 +58,10 @@ export function AuthProvider({ children }) {
                 id: normalizedEmail,
                 name: normalizedEmail.split("@")[0],
                 email: normalizedEmail,
-                role: "user",
+                role:
+                    normalizedEmail === DEMO_ADMIN_EMAIL
+                        ? "admin"
+                        : "user",
             };
 
             setUser(loggedInUser);
@@ -70,8 +77,14 @@ export function AuthProvider({ children }) {
         setLoading(true);
 
         try {
-            if (!name?.trim() || !email?.trim() || !password) {
-                throw new Error("Please complete all required fields.");
+            if (
+                !name?.trim() ||
+                !email?.trim() ||
+                !password
+            ) {
+                throw new Error(
+                    "Please complete all required fields."
+                );
             }
 
             if (password.length < 8) {
@@ -80,10 +93,12 @@ export function AuthProvider({ children }) {
                 );
             }
 
+            const normalizedEmail = email.trim().toLowerCase();
+
             const newUser = {
-                id: email.trim().toLowerCase(),
+                id: normalizedEmail,
                 name: name.trim(),
-                email: email.trim().toLowerCase(),
+                email: normalizedEmail,
                 role: "user",
             };
 
@@ -128,3 +143,5 @@ export function useAuth() {
 
     return context;
 }
+
+export default AuthContext;

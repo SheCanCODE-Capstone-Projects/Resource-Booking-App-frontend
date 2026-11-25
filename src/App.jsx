@@ -8,14 +8,18 @@ import {
 
 import { AuthProvider } from "./context/AuthContext";
 
-import ResourceDetailPage from "./pages/ResourceDetailPage";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
+
 import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
-import AdminDashboardPage from "./pages/AdminDashboardPage";
+import ResourceDetailPage from "./pages/ResourceDetailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import Footer from "./components/Footer";
+import ProfilePage from "./pages/ProfilePage";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 function PlaceholderPage({ title }) {
   return (
@@ -67,25 +71,24 @@ function App() {
 
           <div className="flex-1">
             <Routes>
-              {/* HOME */}
+
+              {/* PUBLIC ROUTES */}
+
               <Route
                 path="/"
                 element={<HomePage />}
               />
 
-              {/* RESOURCE DISCOVERY */}
               <Route
                 path="/explore"
                 element={<ResourceListPage />}
               />
 
-              {/* RESOURCE DETAILS */}
               <Route
                 path="/resources/:id"
                 element={<ResourceDetailPage />}
               />
 
-              {/* AUTHENTICATION */}
               <Route
                 path="/login"
                 element={<LoginPage />}
@@ -96,29 +99,40 @@ function App() {
                 element={<RegisterPage />}
               />
 
-              {/* USER PROFILE */}
-              <Route
-                path="/profile"
-                element={<PlaceholderPage title="My Profile" />}
-              />
+              {/* PROTECTED USER ROUTES */}
 
-              {/* RESERVATIONS */}
-              <Route
-                path="/my-reservations"
-                element={<PlaceholderPage title="My Reservations" />}
-              />
+              <Route element={<ProtectedRoute />}>
+                <Route
+                  path="/profile"
+                  element={<ProfilePage />}
+                />
 
-              {/* TEMPORARY LOCAL ADMIN TEST ROUTE */}
-              <Route
-                path="/admin-preview"
-                element={<AdminDashboardPage />}
-              />
+                <Route
+                  path="/my-reservations"
+                  element={
+                    <PlaceholderPage title="My Reservations" />
+                  }
+                />
+              </Route>
+
+              {/* ADMIN-ONLY ROUTE */}
+
+              <Route element={<AdminRoute />}>
+                <Route
+                  path="/admin-preview"
+                  element={<AdminDashboardPage />}
+                />
+              </Route>
 
               {/* PAGE NOT FOUND */}
+
               <Route
                 path="*"
-                element={<PlaceholderPage title="Page Not Found" />}
+                element={
+                  <PlaceholderPage title="Page Not Found" />
+                }
               />
+
             </Routes>
           </div>
 
