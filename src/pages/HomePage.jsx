@@ -23,11 +23,11 @@ import {
 /* SPACESYNC BRAND IDENTITY */
 const LOGO_SRC = "/images/logo.png";
 
-const BRAND = {
-    green: "#1B3F36",
-    rust: "#8B4A33",
-    cream: "#F5F1E6",
-};
+// const BRAND = {
+//     green: "#1B3F36",
+//     rust: "#8B4A33",
+//     cream: "#F5F1E6",
+// };
 
 const resourceTypes = [
     {
