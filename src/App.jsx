@@ -5,7 +5,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-
+import MyWaitlistPage from "./pages/MyWaitlistPage";
 import { AuthProvider } from "./context/AuthContext";
 
 import Navbar from "./components/Navbar";
@@ -132,7 +132,7 @@ function App() {
                   <PlaceholderPage title="Page Not Found" />
                 }
               />
-
+              <Route path="/my-waitlist" element={<MyWaitlistPage />} />
             </Routes>
           </div>
 

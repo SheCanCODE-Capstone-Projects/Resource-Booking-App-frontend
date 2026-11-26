@@ -484,6 +484,17 @@ function ResourceDetailPage() {
                                                         }`}
                                                 >
                                                     {waitlistMessage}
+
+                                                    {/* DIRECT LINK TO MY WAITLIST */}
+                                                    {waitlistMessageType === "success" && (
+                                                        <Link
+                                                            to="/my-waitlist"
+                                                            className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-[#1B3F36] px-4 py-3 font-semibold text-white transition hover:bg-[#8B4A33]"
+                                                        >
+                                                            View My Waitlist
+                                                            <ArrowUpRight size={17} />
+                                                        </Link>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
