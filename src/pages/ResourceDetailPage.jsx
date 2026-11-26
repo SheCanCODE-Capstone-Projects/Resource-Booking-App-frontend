@@ -1,7 +1,8 @@
 
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import BookingForm from "../components/BookingForm";
+import { useAuth } from "../context/AuthContext";
 
 import {
     ArrowLeft,
@@ -24,12 +25,21 @@ import {
     subscribeToResourceChanges,
 } from "../data/resourceStorage";
 
+import { joinWaitlist } from "../data/waitlistStorage";
+
 function ResourceDetailPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
+
+    const { user, isAuthenticated } = useAuth();
 
     const [resources, setResources] = useState(getResources);
     const [imageError, setImageError] = useState(false);
     const [showBookingForm, setShowBookingForm] = useState(false);
+
+    const [waitlistMessage, setWaitlistMessage] = useState("");
+    const [waitlistMessageType, setWaitlistMessageType] = useState("");
+    const [isJoiningWaitlist, setIsJoiningWaitlist] = useState(false);
 
     // Refresh resources whenever the catalogue changes.
     useEffect(() => {
@@ -42,13 +52,15 @@ function ResourceDetailPage() {
         return subscribeToResourceChanges(refreshResources);
     }, []);
 
-    // Reset modal when switching resources.
+    // Reset page states when switching resources.
     useEffect(() => {
         setShowBookingForm(false);
         setImageError(false);
+        setWaitlistMessage("");
+        setWaitlistMessageType("");
     }, [id]);
 
-    // Close modal with Escape key.
+    // Close booking modal with Escape key.
     useEffect(() => {
         if (!showBookingForm) return;
 
@@ -59,8 +71,6 @@ function ResourceDetailPage() {
         }
 
         document.addEventListener("keydown", handleEscape);
-
-        // Prevent background scrolling while modal is open.
         document.body.style.overflow = "hidden";
 
         return () => {
@@ -72,6 +82,55 @@ function ResourceDetailPage() {
     const resource = resources.find(
         (item) => String(item.id) === String(id)
     );
+
+    // Join the waitlist.
+    function handleJoinWaitlist() {
+        setWaitlistMessage("");
+        setWaitlistMessageType("");
+
+        if (!isAuthenticated) {
+            navigate("/login", {
+                state: {
+                    from: {
+                        pathname: `/resources/${resource.id}`,
+                    },
+                },
+            });
+            return;
+        }
+
+        if (!user?.id) {
+            setWaitlistMessage("Please log in again to join the waitlist.");
+            setWaitlistMessageType("error");
+            return;
+        }
+
+        setIsJoiningWaitlist(true);
+
+        try {
+            joinWaitlist({
+                resourceId: resource.id,
+                resourceName: resource.name,
+                userId: user.id,
+                userName: user.name,
+                userEmail: user.email,
+            });
+
+            setWaitlistMessage(
+                "You have successfully joined the waitlist for this resource."
+            );
+
+            setWaitlistMessageType("success");
+        } catch (error) {
+            setWaitlistMessage(
+                error.message || "Could not join the waitlist. Please try again."
+            );
+
+            setWaitlistMessageType("error");
+        } finally {
+            setIsJoiningWaitlist(false);
+        }
+    }
 
     if (!resource) {
         return (
@@ -349,7 +408,7 @@ function ResourceDetailPage() {
                                     </div>
                                 </div>
 
-                                {/* BOOKING PANEL */}
+                                {/* BOOKING AND WAITLIST PANEL */}
                                 <div className="mx-5 mb-5 rounded-2xl bg-[#F5F1E6] p-5 dark:bg-[#20332B] sm:mx-6 sm:mb-6">
 
                                     <div className="flex items-center gap-2">
@@ -383,11 +442,11 @@ function ResourceDetailPage() {
                                         {isAvailable
                                             ? "Choose your preferred date and time to reserve this space."
                                             : isUnavailable
-                                                ? "This space is currently marked as unavailable."
+                                                ? "Join the waitlist and we'll keep you informed when this space becomes available."
                                                 : "Please check back later for availability information."}
                                     </p>
 
-                                    {/* OPEN BOOKING MODAL */}
+                                    {/* BOOKING BUTTON */}
                                     {isAvailable && (
                                         <button
                                             type="button"
@@ -399,11 +458,41 @@ function ResourceDetailPage() {
                                         </button>
                                     )}
 
-                                    {!isAvailable && (
+                                    {/* JOIN WAITLIST BUTTON */}
+                                    {isUnavailable && (
+                                        <div className="mt-5 space-y-4">
+                                            <button
+                                                type="button"
+                                                onClick={handleJoinWaitlist}
+                                                disabled={isJoiningWaitlist}
+                                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#8B4A33] px-5 py-4 text-sm font-bold text-white transition hover:bg-[#1B3F36] focus:outline-none focus:ring-2 focus:ring-[#8B4A33] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                                            >
+                                                {isJoiningWaitlist
+                                                    ? "Joining..."
+                                                    : "Join Waitlist"}
+
+                                                <ArrowUpRight size={17} />
+                                            </button>
+
+                                            {/* WAITLIST FEEDBACK */}
+                                            {waitlistMessage && (
+                                                <div
+                                                    role="alert"
+                                                    className={`rounded-xl p-4 text-sm leading-6 ${waitlistMessageType === "success"
+                                                            ? "bg-green-50 text-green-800 dark:bg-green-950/30 dark:text-green-300"
+                                                            : "bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300"
+                                                        }`}
+                                                >
+                                                    {waitlistMessage}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* UNKNOWN AVAILABILITY */}
+                                    {!isAvailable && !isUnavailable && (
                                         <div className="mt-5 rounded-xl bg-white/70 p-4 text-center text-sm font-medium text-[#8B4A33] dark:bg-[#1A2923]">
-                                            {isUnavailable
-                                                ? "This resource is currently unavailable for booking."
-                                                : "Booking is unavailable until this resource's availability is confirmed."}
+                                            Booking is unavailable until this resource's availability is confirmed.
                                         </div>
                                     )}
                                 </div>
