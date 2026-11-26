@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import {
     Menu,
@@ -9,9 +9,284 @@ import {
     UserRound,
     Sun,
     Moon,
+    CheckCheck,
+    CheckCircle2,
+    CalendarDays,
+    Info,
+    Trash2,
 } from "lucide-react";
 
+import { useAuth } from "../context/AuthContext";
+
+import {
+    getUserNotifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+    subscribeToNotificationChanges,
+} from "../data/notificationStorage";
+
 const LOGO_SRC = "/images/logo.png";
+
+function NotificationBell() {
+    const { user, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+
+    const dropdownRef = useRef(null);
+
+    const refreshNotifications = () => {
+        if (!isAuthenticated || !user?.id) {
+            setNotifications([]);
+            return;
+        }
+
+        setNotifications(getUserNotifications(user.id));
+    };
+
+    useEffect(() => {
+        refreshNotifications();
+
+        return subscribeToNotificationChanges(refreshNotifications);
+    }, [user?.id, isAuthenticated]);
+
+    // Close dropdown when clicking outside.
+    useEffect(() => {
+        function handleOutsideClick(event) {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)
+            ) {
+                setIsOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleOutsideClick);
+
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, []);
+
+    const unreadCount = notifications.filter(
+        (notification) => !notification.read
+    ).length;
+
+    function handleMarkAsRead(notificationId) {
+        try {
+            markNotificationAsRead(notificationId);
+            refreshNotifications();
+        } catch (error) {
+            console.error("Could not mark notification as read:", error);
+        }
+    }
+
+    function handleMarkAllAsRead() {
+        if (!user?.id) return;
+
+        try {
+            markAllNotificationsAsRead(user.id);
+            refreshNotifications();
+        } catch (error) {
+            console.error("Could not mark notifications as read:", error);
+        }
+    }
+
+    function handleNotificationClick(notification) {
+        if (!notification.read) {
+            handleMarkAsRead(notification.id);
+        }
+
+        setIsOpen(false);
+
+        if (notification.resourceId) {
+            navigate(`/resources/${notification.resourceId}`);
+        }
+    }
+
+    function formatNotificationTime(dateString) {
+        if (!dateString) return "Recently";
+
+        const date = new Date(dateString);
+
+        if (Number.isNaN(date.getTime())) {
+            return "Recently";
+        }
+
+        return date.toLocaleString(undefined, {
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    }
+
+    function getNotificationIcon(type) {
+        switch (type) {
+            case "booking":
+                return CalendarDays;
+
+            case "waitlist":
+                return CheckCircle2;
+
+            default:
+                return Info;
+        }
+    }
+
+    return (
+        <div className="relative" ref={dropdownRef}>
+            {/* NOTIFICATION BUTTON */}
+            <button
+                type="button"
+                onClick={() => setIsOpen((current) => !current)}
+                aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}
+                aria-expanded={isOpen}
+                aria-haspopup="true"
+                className="relative flex h-10 w-10 items-center justify-center rounded-full text-[#1B3F36] transition hover:bg-[#1B3F36]/10 dark:text-[#F5F1E6] dark:hover:bg-white/10"
+            >
+                <Bell size={20} />
+
+                {unreadCount > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#8B4A33] px-1 text-[10px] font-bold text-white ring-2 ring-[#F5F1E6] dark:ring-[#111A17]">
+                        {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                )}
+            </button>
+
+            {/* NOTIFICATION DROPDOWN */}
+            {isOpen && (
+                <div className="absolute right-0 top-full z-[100] mt-3 w-[min(360px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-[#1B3F36]/10 bg-white shadow-2xl dark:border-white/10 dark:bg-[#1A2923]">
+
+                    {/* HEADER */}
+                    <div className="flex items-center justify-between border-b border-[#1B3F36]/10 px-5 py-4 dark:border-white/10">
+                        <div>
+                            <h2 className="text-base font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
+                                Notifications
+                            </h2>
+
+                            <p className="mt-1 text-xs text-[#7B857F] dark:text-[#B9C5BE]">
+                                {unreadCount === 0
+                                    ? "You're all caught up"
+                                    : `${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`}
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleMarkAllAsRead}
+                            disabled={unreadCount === 0}
+                            className="flex items-center gap-1.5 text-xs font-semibold text-[#8B4A33] transition hover:text-[#1B3F36] disabled:cursor-not-allowed disabled:opacity-40 dark:hover:text-[#F5F1E6]"
+                        >
+                            <CheckCheck size={15} />
+                            Mark all read
+                        </button>
+                    </div>
+
+                    {/* NOTIFICATION LIST */}
+                    <div className="max-h-[380px] overflow-y-auto">
+                        {!isAuthenticated ? (
+                            <div className="px-6 py-10 text-center">
+                                <Bell
+                                    size={30}
+                                    className="mx-auto text-[#8B4A33]"
+                                />
+
+                                <p className="mt-3 text-sm font-semibold text-[#1B3F36] dark:text-[#F5F1E6]">
+                                    Log in to view notifications
+                                </p>
+
+                                <Link
+                                    to="/login"
+                                    onClick={() => setIsOpen(false)}
+                                    className="mt-4 inline-flex rounded-lg bg-[#1B3F36] px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-[#8B4A33]"
+                                >
+                                    Log in
+                                </Link>
+                            </div>
+                        ) : notifications.length === 0 ? (
+                            <div className="px-6 py-10 text-center">
+                                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#F5F1E6] dark:bg-[#20332B]">
+                                    <Bell
+                                        size={25}
+                                        className="text-[#8B4A33]"
+                                    />
+                                </div>
+
+                                <h3 className="mt-4 text-sm font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
+                                    No notifications yet
+                                </h3>
+
+                                <p className="mt-2 text-xs leading-5 text-[#7B857F] dark:text-[#B9C5BE]">
+                                    Updates about your reservations and waitlists will appear here.
+                                </p>
+                            </div>
+                        ) : (
+                            notifications.map((notification) => {
+                                const NotificationIcon = getNotificationIcon(
+                                    notification.type
+                                );
+
+                                return (
+                                    <button
+                                        key={notification.id}
+                                        type="button"
+                                        onClick={() =>
+                                            handleNotificationClick(notification)
+                                        }
+                                        className={`flex w-full items-start gap-3 border-b border-[#1B3F36]/5 px-5 py-4 text-left transition hover:bg-[#F5F1E6]/70 dark:border-white/5 dark:hover:bg-[#20332B] ${!notification.read
+                                                ? "bg-[#F5F1E6]/50 dark:bg-[#20332B]/50"
+                                                : ""
+                                            }`}
+                                    >
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F1E6] text-[#8B4A33] dark:bg-[#20332B]">
+                                            <NotificationIcon size={19} />
+                                        </div>
+
+                                        <div className="min-w-0 flex-1">
+                                            <div className="flex items-start justify-between gap-2">
+                                                <p className="text-sm font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
+                                                    {notification.title}
+                                                </p>
+
+                                                {!notification.read && (
+                                                    <span
+                                                        className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#8B4A33]"
+                                                        aria-label="Unread"
+                                                    />
+                                                )}
+                                            </div>
+
+                                            <p className="mt-1 text-xs leading-5 text-[#59665F] dark:text-[#B9C5BE]">
+                                                {notification.message}
+                                            </p>
+
+                                            <p className="mt-2 text-[10px] font-medium text-[#8B4A33]">
+                                                {formatNotificationTime(
+                                                    notification.createdAt
+                                                )}
+                                            </p>
+                                        </div>
+                                    </button>
+                                );
+                            })
+                        )}
+                    </div>
+
+                    {/* FOOTER */}
+                    {notifications.length > 0 && (
+                        <div className="border-t border-[#1B3F36]/10 px-5 py-3 dark:border-white/10">
+                            <p className="text-center text-[11px] text-[#7B857F] dark:text-[#B9C5BE]">
+                                You're viewing your latest notifications.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
 
 function Navbar({ theme, onToggleTheme }) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -97,13 +372,7 @@ function Navbar({ theme, onToggleTheme }) {
                         )}
                     </button>
 
-                    <button
-                        type="button"
-                        aria-label="Notifications"
-                        className="rounded-full p-2.5 text-[#1B3F36] transition hover:bg-[#1B3F36]/10 dark:text-[#F5F1E6] dark:hover:bg-white/10"
-                    >
-                        <Bell size={20} />
-                    </button>
+                    <NotificationBell />
 
                     {/* LOGIN ICON */}
                     <Link
@@ -114,11 +383,12 @@ function Navbar({ theme, onToggleTheme }) {
                     >
                         <UserRound size={19} />
                     </Link>
-
                 </div>
 
                 {/* MOBILE ACTIONS */}
                 <div className="flex items-center gap-2 md:hidden">
+
+                    <NotificationBell />
 
                     {/* MOBILE LOGIN ICON */}
                     <Link
@@ -161,7 +431,6 @@ function Navbar({ theme, onToggleTheme }) {
                             <Menu size={24} />
                         )}
                     </button>
-
                 </div>
             </nav>
 
@@ -182,15 +451,6 @@ function Navbar({ theme, onToggleTheme }) {
                             </NavLink>
                         ))}
                     </div>
-
-                    <div className="mt-6 flex items-center gap-3 border-t border-[#1B3F36]/10 pt-5 dark:border-white/10">
-                        <Bell size={19} className="text-[#8B4A33]" />
-
-                        <span className="text-sm font-medium text-text-secondary">
-                            Notifications
-                        </span>
-                    </div>
-
                 </div>
             )}
         </header>

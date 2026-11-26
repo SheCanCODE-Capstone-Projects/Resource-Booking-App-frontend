@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import BookingForm from "../components/BookingForm";
 import { useAuth } from "../context/AuthContext";
-
+import { addNotification } from "../data/notificationStorage";
 import {
     ArrowLeft,
     ArrowUpRight,
@@ -85,9 +84,12 @@ function ResourceDetailPage() {
 
     // Join the waitlist.
     function handleJoinWaitlist() {
+        if (!resource) return;
+
         setWaitlistMessage("");
         setWaitlistMessageType("");
 
+        // Redirect users who are not logged in.
         if (!isAuthenticated) {
             navigate("/login", {
                 state: {
@@ -99,6 +101,7 @@ function ResourceDetailPage() {
             return;
         }
 
+        // Check that the user has a valid account.
         if (!user?.id) {
             setWaitlistMessage("Please log in again to join the waitlist.");
             setWaitlistMessageType("error");
@@ -108,6 +111,7 @@ function ResourceDetailPage() {
         setIsJoiningWaitlist(true);
 
         try {
+            // First, join the waitlist.
             joinWaitlist({
                 resourceId: resource.id,
                 resourceName: resource.name,
@@ -116,16 +120,30 @@ function ResourceDetailPage() {
                 userEmail: user.email,
             });
 
+            // Then, create a notification (failure here must not break the join).
+            try {
+                addNotification({
+                    userId: user.id,
+                    title: "You're on the waitlist!",
+                    message: `You've joined the waitlist for ${resource.name}. We'll keep you updated.`,
+                    type: "waitlist",
+                    resourceId: resource.id,
+                });
+            } catch (notificationError) {
+                console.error(
+                    "Could not create notification:",
+                    notificationError
+                );
+            }
+
             setWaitlistMessage(
                 "You have successfully joined the waitlist for this resource."
             );
-
             setWaitlistMessageType("success");
         } catch (error) {
             setWaitlistMessage(
                 error.message || "Could not join the waitlist. Please try again."
             );
-
             setWaitlistMessageType("error");
         } finally {
             setIsJoiningWaitlist(false);
@@ -479,8 +497,8 @@ function ResourceDetailPage() {
                                                 <div
                                                     role="alert"
                                                     className={`rounded-xl p-4 text-sm leading-6 ${waitlistMessageType === "success"
-                                                            ? "bg-green-50 text-green-800 dark:bg-green-950/30 dark:text-green-300"
-                                                            : "bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300"
+                                                        ? "bg-green-50 text-green-800 dark:bg-green-950/30 dark:text-green-300"
+                                                        : "bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300"
                                                         }`}
                                                 >
                                                     {waitlistMessage}
