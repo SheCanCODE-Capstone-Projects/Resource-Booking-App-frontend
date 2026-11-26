@@ -5,7 +5,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import MyWaitlistPage from "./pages/MyWaitlistPage";
+
 import { AuthProvider } from "./context/AuthContext";
 
 import Navbar from "./components/Navbar";
@@ -19,6 +19,8 @@ import ResourceDetailPage from "./pages/ResourceDetailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
+import MyReservationsPage from "./pages/MyReservationsPage";
+import MyWaitlistPage from "./pages/MyWaitlistPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 
 function PlaceholderPage({ title }) {
@@ -109,9 +111,12 @@ function App() {
 
                 <Route
                   path="/my-reservations"
-                  element={
-                    <PlaceholderPage title="My Reservations" />
-                  }
+                  element={<MyReservationsPage />}
+                />
+
+                <Route
+                  path="/my-waitlist"
+                  element={<MyWaitlistPage />}
                 />
               </Route>
 
@@ -132,7 +137,7 @@ function App() {
                   <PlaceholderPage title="Page Not Found" />
                 }
               />
-              <Route path="/my-waitlist" element={<MyWaitlistPage />} />
+
             </Routes>
           </div>
 

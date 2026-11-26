@@ -6,10 +6,20 @@ import {
     useState,
 } from "react";
 
+import {
+    registerUser,
+    loginUser,
+    verifyEmail,
+    resendVerification,
+    forgotPassword,
+    resetPassword,
+    changePassword,
+} from "../api/authApi";
+
 const AuthContext = createContext(null);
 
 const STORAGE_KEY = "spacesync-auth-user";
-const DEMO_ADMIN_EMAIL = "admin@spacesync.com";
+const TOKEN_KEY = "spacesync-auth-token";
 
 export function AuthProvider({ children }) {
     // Restore the saved user session.
@@ -25,7 +35,7 @@ export function AuthProvider({ children }) {
 
     const [loading, setLoading] = useState(false);
 
-    // Save or remove the current session.
+    // Save the current user session.
     useEffect(() => {
         try {
             if (user) {
@@ -41,29 +51,63 @@ export function AuthProvider({ children }) {
         }
     }, [user]);
 
-    // Demo login.
+    // Register a new account.
+    async function register(name, email, password) {
+        setLoading(true);
+
+        try {
+            if (!name?.trim() || !email?.trim() || !password) {
+                throw new Error("Please complete all required fields.");
+            }
+
+            const nameParts = name.trim().split(/\s+/);
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(" ");
+
+            const result = await registerUser({
+                firstName,
+                lastName,
+                email: email.trim().toLowerCase(),
+                password,
+            });
+
+            // Registration does not automatically log the user in.
+            return result;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Login using real backend credentials.
     async function login(email, password) {
         setLoading(true);
 
         try {
             if (!email?.trim() || !password) {
-                throw new Error(
-                    "Email and password are required."
-                );
+                throw new Error("Email and password are required.");
             }
 
             const normalizedEmail = email.trim().toLowerCase();
 
+            const result = await loginUser(
+                normalizedEmail,
+                password
+            );
+
+            if (!result?.token || !result?.userId) {
+                throw new Error(
+                    "Login response did not contain the required user ID and token."
+                );
+            }
+
             const loggedInUser = {
-                id: normalizedEmail,
+                id: result.userId,
                 name: normalizedEmail.split("@")[0],
                 email: normalizedEmail,
-                role:
-                    normalizedEmail === DEMO_ADMIN_EMAIL
-                        ? "admin"
-                        : "user",
+                role: "user",
             };
 
+            localStorage.setItem(TOKEN_KEY, result.token);
             setUser(loggedInUser);
 
             return loggedInUser;
@@ -72,46 +116,34 @@ export function AuthProvider({ children }) {
         }
     }
 
-    // Demo registration.
-    async function register(name, email, password) {
-        setLoading(true);
+    // Verify a registered email.
+    async function confirmEmail(email, otp) {
+        return verifyEmail(email, otp);
+    }
 
-        try {
-            if (
-                !name?.trim() ||
-                !email?.trim() ||
-                !password
-            ) {
-                throw new Error(
-                    "Please complete all required fields."
-                );
-            }
+    // Request a new verification OTP.
+    async function requestVerification(email) {
+        return resendVerification(email);
+    }
 
-            if (password.length < 8) {
-                throw new Error(
-                    "Password must contain at least 8 characters."
-                );
-            }
+    // Request a password recovery OTP.
+    async function requestPasswordReset(email) {
+        return forgotPassword(email);
+    }
 
-            const normalizedEmail = email.trim().toLowerCase();
+    // Reset a forgotten password.
+    async function completePasswordReset(email, token, newPassword) {
+        return resetPassword(email, token, newPassword);
+    }
 
-            const newUser = {
-                id: normalizedEmail,
-                name: name.trim(),
-                email: normalizedEmail,
-                role: "user",
-            };
-
-            setUser(newUser);
-
-            return newUser;
-        } finally {
-            setLoading(false);
-        }
+    // Change the password of the authenticated user.
+    async function updatePassword(currentPassword, newPassword) {
+        return changePassword(currentPassword, newPassword);
     }
 
     // Logout.
     function logout() {
+        localStorage.removeItem(TOKEN_KEY);
         setUser(null);
     }
 
@@ -122,6 +154,11 @@ export function AuthProvider({ children }) {
         login,
         register,
         logout,
+        confirmEmail,
+        requestVerification,
+        requestPasswordReset,
+        completePasswordReset,
+        updatePassword,
     };
 
     return (
