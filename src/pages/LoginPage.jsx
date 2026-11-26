@@ -1,7 +1,12 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Mail, Lock, LogIn, ArrowRight } from "lucide-react";
+import {
+    Mail,
+    Lock,
+    LogIn,
+    ArrowRight,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 function LoginPage() {
@@ -55,7 +60,6 @@ function LoginPage() {
         <main className="flex min-h-screen items-center justify-center bg-[#F5F1E6] px-5 py-12 dark:bg-[#111A17]">
             <div className="w-full max-w-md">
 
-                {/* HEADER */}
                 <div className="mb-8 text-center">
                     <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1B3F36] text-white">
                         <LogIn size={27} />
@@ -70,12 +74,10 @@ function LoginPage() {
                     </p>
                 </div>
 
-                {/* LOGIN FORM */}
                 <form
                     onSubmit={handleSubmit}
                     className="rounded-3xl border border-[#1B3F36]/10 bg-white p-7 shadow-lg dark:border-white/10 dark:bg-[#1A2923] sm:p-9"
                 >
-                    {/* ERROR MESSAGE */}
                     {error && (
                         <div
                             role="alert"
@@ -85,7 +87,6 @@ function LoginPage() {
                         </div>
                     )}
 
-                    {/* EMAIL */}
                     <div className="mb-5">
                         <label
                             htmlFor="email"
@@ -104,6 +105,7 @@ function LoginPage() {
                                 id="email"
                                 name="email"
                                 type="email"
+                                required
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="you@example.com"
@@ -113,8 +115,7 @@ function LoginPage() {
                         </div>
                     </div>
 
-                    {/* PASSWORD */}
-                    <div className="mb-6">
+                    <div className="mb-2">
                         <label
                             htmlFor="password"
                             className="mb-2 block text-sm font-semibold text-[#1B3F36] dark:text-[#F5F1E6]"
@@ -132,6 +133,7 @@ function LoginPage() {
                                 id="password"
                                 name="password"
                                 type="password"
+                                required
                                 value={formData.password}
                                 onChange={handleChange}
                                 placeholder="Enter your password"
@@ -141,7 +143,15 @@ function LoginPage() {
                         </div>
                     </div>
 
-                    {/* SUBMIT BUTTON */}
+                    <div className="mb-6 text-right">
+                        <Link
+                            to="/forgot-password"
+                            className="text-sm font-semibold text-[#8B4A33] hover:underline"
+                        >
+                            Forgot password?
+                        </Link>
+                    </div>
+
                     <button
                         type="submit"
                         disabled={loading}
@@ -152,7 +162,6 @@ function LoginPage() {
                         {!loading && <ArrowRight size={17} />}
                     </button>
 
-                    {/* REGISTER LINK */}
                     <p className="mt-6 text-center text-sm text-[#59665F] dark:text-[#B9C5BE]">
                         Don't have an account?{" "}
                         <Link

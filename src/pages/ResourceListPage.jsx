@@ -1,12 +1,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, Building2, MapPin } from "lucide-react";
+import { Search, Building2, MapPin, RefreshCw } from "lucide-react";
 
-import {
-    getResources,
-    subscribeToResourceChanges,
-} from "../data/resourceStorage";
+import { getResources } from "../api/resourceApi";
 
 import ResourceCard from "../components/ResourceCard";
 import FilterBar from "../components/FilterBar";
@@ -14,24 +11,9 @@ import FilterBar from "../components/FilterBar";
 function ResourceListPage() {
     const navigate = useNavigate();
 
-    const [resources, setResources] = useState(getResources);
+    const [resources, setResources] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-
-    // Load resources and subscribe to catalogue changes.
-    useEffect(() => {
-        function refreshResources() {
-            setResources(getResources());
-        }
-
-        refreshResources();
-        setIsLoading(false);
-
-        const unsubscribe = subscribeToResourceChanges(
-            refreshResources
-        );
-
-        return unsubscribe;
-    }, []);
+    const [error, setError] = useState("");
 
     // Filter states
     const [searchQuery, setSearchQuery] = useState("");
@@ -46,21 +28,55 @@ function ResourceListPage() {
     const [selectedAmenities, setSelectedAmenities] =
         useState([]);
 
-    // Filter the shared resource catalogue.
+    // Fetch resources from the backend.
+    async function loadResources() {
+        try {
+            setIsLoading(true);
+            setError("");
+
+            const data = await getResources();
+
+            if (!Array.isArray(data)) {
+                throw new Error("The backend returned an unexpected resource format.");
+            }
+
+            setResources(data);
+        } catch (err) {
+            setError(err.message || "Unable to load resources.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        loadResources();
+    }, []);
+
+    // Filter resources received from the backend.
     const filteredResources = useMemo(() => {
         return resources.filter((resource) => {
             const searchText = searchQuery.trim().toLowerCase();
+
+            const locationParts = (resource.location || "")
+                .split(",")
+                .map((part) => part.trim());
+
+            const province = locationParts[0] || "";
+            const district = locationParts[1] || "";
+
+            const amenities = Array.isArray(resource.amenities)
+                ? resource.amenities
+                : (resource.amenities || "")
+                    .split(",")
+                    .map((item) => item.trim())
+                    .filter(Boolean);
 
             const searchableText = [
                 resource.name,
                 resource.description,
                 resource.category,
                 resource.location,
-                resource.province,
-                resource.district,
-                ...(Array.isArray(resource.amenities)
-                    ? resource.amenities
-                    : []),
+                ...amenities,
             ]
                 .filter(Boolean)
                 .join(" ")
@@ -75,11 +91,11 @@ function ResourceListPage() {
 
             const matchesProvince =
                 selectedProvince === "All Provinces" ||
-                resource.province === selectedProvince;
+                province === selectedProvince;
 
             const matchesDistrict =
                 selectedDistrict === "All Districts" ||
-                resource.district === selectedDistrict;
+                district === selectedDistrict;
 
             const capacity = Number(selectedMinCapacity);
 
@@ -91,15 +107,12 @@ function ResourceListPage() {
                     Number(resource.capacity) >= capacity
                 );
 
-            const resourceAmenities = Array.isArray(resource.amenities)
-                ? resource.amenities
-                : [];
-
             const matchesAmenities = selectedAmenities.every(
-                (amenity) => resourceAmenities.includes(amenity)
+                (amenity) => amenities.includes(amenity)
             );
 
             return (
+                resource.active !== false &&
                 matchesSearch &&
                 matchesCategory &&
                 matchesProvince &&
@@ -260,6 +273,30 @@ function ResourceListPage() {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    ) : error ? (
+
+                        /* ERROR STATE */
+                        <div
+                            role="alert"
+                            className="rounded-2xl border border-[#8B4A33]/25 bg-white px-6 py-12 text-center dark:bg-[#1A2923]"
+                        >
+                            <h3 className="text-lg font-bold text-[#8B4A33]">
+                                Unable to load resources
+                            </h3>
+
+                            <p className="mt-3 text-sm text-[#59665F] dark:text-[#B9C5BE]">
+                                {error}
+                            </p>
+
+                            <button
+                                type="button"
+                                onClick={loadResources}
+                                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#1B3F36] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#14302A]"
+                            >
+                                <RefreshCw size={16} />
+                                Try again
+                            </button>
                         </div>
                     ) : filteredResources.length > 0 ? (
 
