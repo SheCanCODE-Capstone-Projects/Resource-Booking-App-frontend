@@ -8,67 +8,99 @@ import {
     Trash2,
     ArrowRight,
     ClipboardList,
-    CheckCircle2,
+    RefreshCw,
 } from "lucide-react";
 
-import { useAuth } from "../context/AuthContext";
-
 import {
-    getUserWaitlistEntries,
+    getMyWaitlistEntries,
     leaveWaitlist,
-    subscribeToWaitlistChanges,
-} from "../data/waitlistStorage";
+} from "../api/waitlistApi";
 
 function MyWaitlistPage() {
-    const { user } = useAuth();
     const [entries, setEntries] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [leavingId, setLeavingId] = useState(null);
 
-    const refreshEntries = useCallback(() => {
-        if (!user?.id) {
-            setEntries([]);
-            return;
+    const refreshEntries = useCallback(async () => {
+        setLoading(true);
+        setError("");
+
+        try {
+            const data = await getMyWaitlistEntries();
+
+            setEntries(Array.isArray(data) ? data : []);
+        } catch (err) {
+            setError(
+                err.message || "Could not load your waitlist entries."
+            );
+        } finally {
+            setLoading(false);
         }
-
-        setEntries(getUserWaitlistEntries(user.id));
-    }, [user?.id]);
+    }, []);
 
     useEffect(() => {
         refreshEntries();
-
-        return subscribeToWaitlistChanges(refreshEntries);
     }, [refreshEntries]);
 
-    function handleLeaveWaitlist(entryId) {
+    async function handleLeaveWaitlist(entryId) {
         const confirmed = window.confirm(
             "Are you sure you want to leave this waitlist?"
         );
 
         if (!confirmed) return;
 
+        setLeavingId(entryId);
+        setError("");
+
         try {
-            leaveWaitlist(entryId);
-            setError("");
-            refreshEntries();
+            await leaveWaitlist(entryId);
+
+            setEntries((previous) =>
+                previous.filter((entry) => entry.id !== entryId)
+            );
         } catch (err) {
-            setError(err.message || "Could not leave the waitlist.");
+            setError(
+                err.message || "Could not leave the waitlist."
+            );
+        } finally {
+            setLeavingId(null);
         }
     }
 
     function formatDate(dateString) {
-        if (!dateString) return "Date not specified";
+        if (!dateString) return "Not specified";
 
         const date = new Date(dateString);
 
         if (Number.isNaN(date.getTime())) {
-            return "Date not available";
+            return "Date unavailable";
         }
 
-        return date.toLocaleDateString(undefined, {
+        return date.toLocaleString(undefined, {
             day: "numeric",
             month: "long",
             year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
         });
+    }
+
+    function getStatusStyle(status) {
+        switch (status?.toUpperCase()) {
+            case "WAITING":
+                return "bg-[#F5E6DF] text-[#8B4A33]";
+
+            case "PROMOTED":
+                return "bg-[#E6F0E9] text-[#1B3F36]";
+
+            case "CANCELLED":
+            case "CANCELED":
+                return "bg-gray-100 text-gray-600";
+
+            default:
+                return "bg-[#F5F1E6] text-[#59665F]";
+        }
     }
 
     return (
@@ -101,7 +133,7 @@ function MyWaitlistPage() {
                     </Link>
                 </div>
 
-                {/* WAITLIST SUMMARY */}
+                {/* SUMMARY */}
                 <div className="mt-9 rounded-2xl border border-[#1B3F36]/10 bg-white p-6 dark:border-white/10 dark:bg-[#1A2923]">
                     <div className="flex items-center gap-4">
                         <div className="rounded-xl bg-[#F5F1E6] p-3 dark:bg-[#20332B]">
@@ -113,7 +145,7 @@ function MyWaitlistPage() {
 
                         <div>
                             <p className="text-sm text-[#59665F] dark:text-[#B9C5BE]">
-                                Active waitlist entries
+                                Your waitlist entries
                             </p>
 
                             <p className="mt-1 text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
@@ -123,29 +155,58 @@ function MyWaitlistPage() {
                     </div>
                 </div>
 
-                {/* ERROR MESSAGE */}
+                {/* ERROR */}
                 {error && (
                     <div
                         role="alert"
                         className="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700 dark:bg-red-950/30 dark:text-red-300"
                     >
-                        {error}
+                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+                            <p>{error}</p>
+
+                            <button
+                                type="button"
+                                onClick={refreshEntries}
+                                className="font-semibold underline"
+                            >
+                                Try again
+                            </button>
+                        </div>
                     </div>
                 )}
 
                 {/* WAITLIST ENTRIES */}
                 <section className="mt-9">
-                    <div className="mb-5 flex items-center justify-between">
+                    <div className="mb-5 flex items-center justify-between gap-3">
                         <h2 className="text-xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
                             Your waitlisted spaces
                         </h2>
 
-                        <span className="rounded-full bg-[#E6F0E9] px-3 py-1 text-xs font-semibold text-[#1B3F36]">
-                            {entries.length} {entries.length === 1 ? "entry" : "entries"}
-                        </span>
+                        <button
+                            type="button"
+                            onClick={refreshEntries}
+                            disabled={loading}
+                            aria-label="Refresh waitlist"
+                            className="rounded-lg p-2 text-[#1B3F36] transition hover:bg-white disabled:opacity-50 dark:text-[#F5F1E6] dark:hover:bg-[#20332B]"
+                        >
+                            <RefreshCw
+                                size={18}
+                                className={loading ? "animate-spin" : ""}
+                            />
+                        </button>
                     </div>
 
-                    {entries.length === 0 ? (
+                    {loading ? (
+                        <div className="rounded-3xl bg-white px-6 py-16 text-center dark:bg-[#1A2923]">
+                            <RefreshCw
+                                size={30}
+                                className="mx-auto animate-spin text-[#8B4A33]"
+                            />
+                            <p className="mt-4 text-sm text-[#59665F] dark:text-[#B9C5BE]">
+                                Loading your waitlist...
+                            </p>
+                        </div>
+                    ) : entries.length === 0 ? (
                         <div className="rounded-3xl border border-dashed border-[#1B3F36]/20 bg-white px-6 py-16 text-center dark:border-white/20 dark:bg-[#1A2923]">
                             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#F5F1E6] dark:bg-[#20332B]">
                                 <ClipboardList
@@ -190,9 +251,11 @@ function MyWaitlistPage() {
                                                 </h3>
                                             </div>
 
-                                            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#F5E6DF] px-3 py-1.5 text-xs font-semibold capitalize text-[#8B4A33]">
+                                            <span
+                                                className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ${getStatusStyle(entry.status)}`}
+                                            >
                                                 <Clock size={13} />
-                                                {entry.status || "waitlisted"}
+                                                {entry.status || "WAITING"}
                                             </span>
                                         </div>
 
@@ -203,43 +266,43 @@ function MyWaitlistPage() {
                                                     className="shrink-0 text-[#8B4A33]"
                                                 />
                                                 <span>
-                                                    Joined: {formatDate(entry.createdAt)}
+                                                    Queue date: {formatDate(entry.queuedAt)}
                                                 </span>
                                             </div>
 
-                                            <div className="flex items-center gap-3 text-sm text-[#59665F] dark:text-[#B9C5BE]">
+                                            <div className="flex items-start gap-3 text-sm text-[#59665F] dark:text-[#B9C5BE]">
                                                 <MapPin
-                                                    size={17}
-                                                    className="shrink-0 text-[#8B4A33]"
-                                                />
-                                                <span>
-                                                    Resource ID: {entry.resourceId}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className="mt-6 rounded-xl bg-[#F5F1E6] p-4 dark:bg-[#20332B]">
-                                            <div className="flex items-start gap-2">
-                                                <CheckCircle2
                                                     size={17}
                                                     className="mt-0.5 shrink-0 text-[#8B4A33]"
                                                 />
+                                                <span className="break-all">
+                                                    Resource ID: {entry.resourceId}
+                                                </span>
+                                            </div>
 
-                                                <p className="text-xs leading-5 text-[#59665F] dark:text-[#B9C5BE]">
-                                                    Your waitlist request is saved.
-                                                    Availability updates and automatic promotion
-                                                    will be connected to the backend.
-                                                </p>
+                                            <div className="flex items-start gap-3 text-sm text-[#59665F] dark:text-[#B9C5BE]">
+                                                <Clock
+                                                    size={17}
+                                                    className="mt-0.5 shrink-0 text-[#8B4A33]"
+                                                />
+                                                <span>
+                                                    Requested: {formatDate(entry.startTime)}
+                                                    {" — "}
+                                                    {formatDate(entry.endTime)}
+                                                </span>
                                             </div>
                                         </div>
 
                                         <button
                                             type="button"
+                                            disabled={leavingId === entry.id}
                                             onClick={() => handleLeaveWaitlist(entry.id)}
-                                            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-[#8B4A33]/30 px-4 py-3 text-sm font-semibold text-[#8B4A33] transition hover:bg-[#8B4A33] hover:text-white"
+                                            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-[#8B4A33]/30 px-4 py-3 text-sm font-semibold text-[#8B4A33] transition hover:bg-[#8B4A33] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                                         >
                                             <Trash2 size={16} />
-                                            Leave Waitlist
+                                            {leavingId === entry.id
+                                                ? "Leaving..."
+                                                : "Leave Waitlist"}
                                         </button>
                                     </div>
                                 </article>
