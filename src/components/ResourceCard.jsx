@@ -5,7 +5,7 @@ import {
     ArrowUpRight,
 } from "lucide-react";
 
-// Category images used when a resource image is unavailable.
+// Category images used when a local resource image is unavailable.
 const fallbackImages = {
     Campus:
         "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85",
@@ -30,8 +30,7 @@ function ResourceCard({ resource, onViewDetails }) {
     const fallbackImage =
         fallbackImages[resource.category] || fallbackImages.Campus;
 
-    const image = resource.imageUrl || resource.image || fallbackImage;
-    const isActive = resource.active !== false;
+    const isAvailable = resource.status === "Available";
 
     return (
         <article className="group overflow-hidden rounded-2xl border border-[#1B3F36]/15 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-[#F5F1E6]/15 dark:bg-[#1A2923]">
@@ -39,7 +38,7 @@ function ResourceCard({ resource, onViewDetails }) {
             {/* RESOURCE IMAGE */}
             <div className="relative h-56 overflow-hidden bg-[#EAE3D3]">
                 <img
-                    src={image}
+                    src={resource.image || fallbackImage}
                     alt={`${resource.name} - ${resource.category} resource`}
                     loading="lazy"
                     onError={(event) => {
@@ -56,14 +55,14 @@ function ResourceCard({ resource, onViewDetails }) {
                     {resource.category}
                 </span>
 
-                {/* RESOURCE STATUS */}
+                {/* AVAILABILITY */}
                 <span
-                    className={`absolute right-4 top-4 rounded-full px-3 py-1.5 text-xs font-semibold ${isActive
+                    className={`absolute right-4 top-4 rounded-full px-3 py-1.5 text-xs font-semibold ${isAvailable
                             ? "bg-[#E6F0E9] text-[#1B3F36]"
                             : "bg-[#F5E6DF] text-[#8B4A33]"
                         }`}
                 >
-                    {isActive ? "Active" : "Inactive"}
+                    {resource.status}
                 </span>
             </div>
 
@@ -75,7 +74,7 @@ function ResourceCard({ resource, onViewDetails }) {
 
                 {/* DESCRIPTION */}
                 <p className="mt-3 min-h-[72px] text-sm leading-6 text-[#59665F] dark:text-[#B9C5BE]">
-                    {resource.description || "No description available."}
+                    {resource.description}
                 </p>
 
                 {/* RESOURCE DETAILS */}
@@ -85,7 +84,7 @@ function ResourceCard({ resource, onViewDetails }) {
                             size={17}
                             className="shrink-0 text-[#8B4A33]"
                         />
-                        <span>{resource.location || "Location not specified"}</span>
+                        <span>{resource.location}</span>
                     </div>
 
                     <div className="flex items-center gap-3 text-sm text-[#59665F] dark:text-[#B9C5BE]">
@@ -106,7 +105,7 @@ function ResourceCard({ resource, onViewDetails }) {
                     </p>
 
                     <p className="mt-1 text-sm font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
-                        {resource.price || "Pricing not specified"}
+                        {resource.price}
                     </p>
                 </div>
 

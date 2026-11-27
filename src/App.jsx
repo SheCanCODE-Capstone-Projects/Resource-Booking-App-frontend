@@ -6,22 +6,12 @@ import {
   Route,
 } from "react-router-dom";
 
-import { AuthProvider } from "./context/AuthContext";
-
+import ResourceDetailPage from "./pages/ResourceDetailPage";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AdminRoute from "./components/AdminRoute";
-
 import HomePage from "./pages/HomePage";
 import ResourceListPage from "./pages/ResourceListPage";
-import ResourceDetailPage from "./pages/ResourceDetailPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import ProfilePage from "./pages/ProfilePage";
-import MyReservationsPage from "./pages/MyReservationsPage";
-import MyWaitlistPage from "./pages/MyWaitlistPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import Footer from "./components/Footer";
 
 function PlaceholderPage({ title }) {
   return (
@@ -58,93 +48,56 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
-        <div className="flex min-h-screen flex-col bg-surface-canvas text-text-primary transition-colors duration-200">
-          <Navbar
-            theme={theme}
-            onToggleTheme={toggleTheme}
-          />
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
+      <div className="flex min-h-screen flex-col bg-surface-canvas text-text-primary transition-colors duration-200">
+        <Navbar
+          theme={theme}
+          onToggleTheme={toggleTheme}
+        />
 
-          <div className="flex-1">
-            <Routes>
+        <div className="flex-1">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
 
-              {/* PUBLIC ROUTES */}
+            <Route path="/explore" element={<ResourceListPage />} />
 
-              <Route
-                path="/"
-                element={<HomePage />}
-              />
+            <Route
+              path="/resources/:id"
+              element={<ResourceDetailPage />}
+            />
 
-              <Route
-                path="/explore"
-                element={<ResourceListPage />}
-              />
+            <Route
+              path="/my-reservations"
+              element={<PlaceholderPage title="My Reservations" />}
+            />
 
-              <Route
-                path="/resources/:id"
-                element={<ResourceDetailPage />}
-              />
+            <Route
+              path="/login"
+              element={<PlaceholderPage title="Login" />}
+            />
 
-              <Route
-                path="/login"
-                element={<LoginPage />}
-              />
+            {/* TEMPORARY LOCAL TEST ROUTE */}
+            <Route
+              path="/admin-preview"
+              element={<AdminDashboardPage />}
+            />
 
-              <Route
-                path="/register"
-                element={<RegisterPage />}
-              />
-
-              {/* PROTECTED USER ROUTES */}
-
-              <Route element={<ProtectedRoute />}>
-                <Route
-                  path="/profile"
-                  element={<ProfilePage />}
-                />
-
-                <Route
-                  path="/my-reservations"
-                  element={<MyReservationsPage />}
-                />
-
-                <Route
-                  path="/my-waitlist"
-                  element={<MyWaitlistPage />}
-                />
-              </Route>
-
-              {/* ADMIN-ONLY ROUTE */}
-
-              <Route element={<AdminRoute />}>
-                <Route
-                  path="/admin-preview"
-                  element={<AdminDashboardPage />}
-                />
-              </Route>
-
-              {/* PAGE NOT FOUND */}
-
-              <Route
-                path="*"
-                element={
-                  <PlaceholderPage title="Page Not Found" />
-                }
-              />
-
-            </Routes>
-          </div>
-
-          <Footer />
+            {/* /admin and unknown routes show Page Not Found */}
+            <Route
+              path="*"
+              element={<PlaceholderPage title="Page Not Found" />}
+            />
+          </Routes>
         </div>
-      </BrowserRouter>
-    </AuthProvider>
+
+        <Footer />
+      </div>
+    </BrowserRouter>
   );
 }
 
