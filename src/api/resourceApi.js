@@ -23,20 +23,20 @@ export function getResources(filters = {}) {
 
     const queryString = queryParams.toString();
     const endpoint = queryString
-        ? `/resources?${queryString}`
-        : "/resources";
+        ? `/api/resources?${queryString}`
+        : "/api/resources";
 
     return apiRequest(endpoint);
 }
 
 // GET: Fetch one resource by ID.
 export function getResourceById(id) {
-    return apiRequest(`/resources/${id}`);
+    return apiRequest(`/api/resources/${id}`);
 }
 
 // POST: Create a resource.
 export function createResource(resourceData) {
-    return apiRequest("/resources", {
+    return apiRequest("/api/resources", {
         method: "POST",
         body: JSON.stringify(resourceData),
     });
@@ -44,7 +44,7 @@ export function createResource(resourceData) {
 
 // PUT: Update a resource.
 export function updateResource(id, resourceData) {
-    return apiRequest(`/resources/${id}`, {
+    return apiRequest(`/api/resources/${id}`, {
         method: "PUT",
         body: JSON.stringify(resourceData),
     });
@@ -52,7 +52,7 @@ export function updateResource(id, resourceData) {
 
 // DELETE: Deactivate a resource.
 export function deactivateResource(id) {
-    return apiRequest(`/resources/${id}`, {
+    return apiRequest(`/api/resources/${id}`, {
         method: "DELETE",
     });
 }
