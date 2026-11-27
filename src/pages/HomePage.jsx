@@ -18,16 +18,11 @@ import {
     Bookmark,
     Home,
     UserRound,
+    Sparkles,
 } from "lucide-react";
 
 /* SPACESYNC BRAND IDENTITY */
 const LOGO_SRC = "/images/logo.png";
-
-// const BRAND = {
-//     green: "#1B3F36",
-//     rust: "#8B4A33",
-//     cream: "#F5F1E6",
-// };
 
 const resourceTypes = [
     {
@@ -97,113 +92,115 @@ function HomePage() {
         <main className="overflow-hidden">
 
             {/* HERO SECTION */}
-            <section className="mx-auto grid max-w-7xl items-center gap-14 px-5 py-16 md:py-24 lg:grid-cols-2 lg:px-8">
+            <section className="relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#111A17] md:min-h-[760px]">
+
+                {/* ANIMATED BACKGROUND IMAGE */}
+                <div className="absolute inset-0 -z-20 overflow-hidden">
+                    <img
+                        src="/images/hero.jpg"
+                        alt=""
+                        aria-hidden="true"
+                        className="hero-background h-full w-full object-cover"
+                    />
+                </div>
+
+                {/* DARK OVERLAY */}
+                <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#111A17]/95 via-[#111A17]/75 to-[#111A17]/30" />
+
+                <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#111A17]/50 via-transparent to-[#111A17]/20" />
+
+                {/* DECORATIVE FLOATING ELEMENTS */}
+                <div className="pointer-events-none absolute right-[12%] top-[20%] hidden h-20 w-20 rounded-full border border-[#F5F1E6]/20 animate-float lg:block" />
+
+                <div className="pointer-events-none absolute right-[25%] bottom-[18%] hidden h-12 w-12 rounded-2xl border border-[#F5F1E6]/20 rotate-12 animate-float-delayed lg:block" />
 
                 {/* HERO CONTENT */}
-                <div>
-                    <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#8B4A33]/40 px-4 py-2 text-xs font-semibold text-[#8B4A33]">
-                        <span className="h-2 w-2 rounded-full bg-[#8B4A33]" />
-                        YOUR SPACE. YOUR TIME.
-                    </div>
+                <div className="mx-auto w-full max-w-7xl px-5 py-24 lg:px-8">
+                    <div className="max-w-3xl">
 
-                    <h1 className="max-w-2xl text-5xl font-bold leading-tight tracking-tight text-text-primary md:text-6xl lg:text-7xl">
-                        Find your space.
-                        <span className="block text-[#8B4A33]">
-                            Make it happen.
-                        </span>
-                    </h1>
-
-                    <p className="mt-7 max-w-xl text-base leading-8 text-text-secondary md:text-lg">
-                        Discover and book the right spaces for studying,
-                        working, meeting and creating memorable experiences.
-                        Everything you need, in one place.
-                    </p>
-
-                    <div className="mt-9 flex flex-wrap gap-4">
-                        <Link
-                            to="/explore"
-                            className="inline-flex items-center gap-3 rounded-lg bg-[#1B3F36] px-7 py-4 text-sm font-semibold text-white transition hover:bg-[#14302A]"
-                        >
-                            Explore spaces
-                            <ArrowRight size={18} />
-                        </Link>
-
-                        <a
-                            href="#how-it-works"
-                            className="inline-flex items-center rounded-lg border border-[#1B3F36] px-7 py-4 text-sm font-semibold text-[#1B3F36] transition hover:bg-[#F5F1E6] dark:border-[#F5F1E6] dark:text-[#F5F1E6] dark:hover:bg-white/10"
-                        >
-                            How it works
-                        </a>
-                    </div>
-
-                    {/* PLATFORM HIGHLIGHTS */}
-                    <div className="mt-12 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-border pt-7">
-                        <div>
-                            <p className="text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
-                                6+
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                                Resource categories
-                            </p>
+                        <div className="hero-reveal mb-8 inline-flex items-center gap-3 rounded-full border border-[#F5F1E6]/30 bg-white/10 px-5 py-3 text-xs font-semibold tracking-[0.15em] text-[#F5F1E6] backdrop-blur-md">
+                            <span className="relative flex h-2.5 w-2.5">
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C58A68] opacity-75" />
+                                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#C58A68]" />
+                            </span>
+                            YOUR SPACE. YOUR TIME.
                         </div>
 
-                        <div className="h-10 w-px bg-border" />
+                        <h1 className="hero-reveal hero-delay-1 text-5xl font-bold leading-[1.12] tracking-tight text-[#F5F1E6] sm:text-6xl md:text-7xl lg:text-8xl">
+                            Find your space.
+                            <span className="mt-2 block text-[#C58A68]">
+                                Make it happen.
+                            </span>
+                        </h1>
 
-                        <div>
-                            <p className="text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
-                                One
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                                Booking platform
-                            </p>
+                        <p className="hero-reveal hero-delay-2 mt-8 max-w-2xl text-base leading-8 text-[#F5F1E6]/80 md:text-lg">
+                            Discover and book the right spaces for studying,
+                            working, meeting and creating memorable experiences.
+                            Everything you need, in one place.
+                        </p>
+
+                        <div className="hero-reveal hero-delay-3 mt-10 flex flex-wrap gap-4">
+
+                            <Link
+                                to="/explore"
+                                className="group inline-flex items-center gap-3 rounded-xl bg-[#1B3F36] px-7 py-4 text-sm font-bold text-white shadow-xl transition duration-300 hover:-translate-y-1 hover:bg-[#285448] hover:shadow-2xl"
+                            >
+                                Explore spaces
+                                <ArrowRight
+                                    size={18}
+                                    className="transition-transform duration-300 group-hover:translate-x-1"
+                                />
+                            </Link>
+
+                            <a
+                                href="#how-it-works"
+                                className="inline-flex items-center gap-3 rounded-xl border border-[#F5F1E6]/60 bg-white/5 px-7 py-4 text-sm font-semibold text-[#F5F1E6] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:bg-white/15"
+                            >
+                                How it works
+                            </a>
                         </div>
 
-                        <div className="h-10 w-px bg-border" />
+                        {/* PLATFORM HIGHLIGHTS */}
+                        <div className="hero-reveal hero-delay-4 mt-16 flex flex-wrap items-center gap-x-9 gap-y-6 border-t border-white/20 pt-8">
 
-                        <div>
-                            <p className="text-2xl font-bold text-[#1B3F36] dark:text-[#F5F1E6]">
-                                Your
-                            </p>
-                            <p className="mt-1 text-xs text-text-secondary">
-                                Time and convenience
-                            </p>
+                            <div>
+                                <p className="text-3xl font-bold text-[#F5F1E6]">
+                                    6+
+                                </p>
+                                <p className="mt-1 text-xs text-[#F5F1E6]/65">
+                                    Resource categories
+                                </p>
+                            </div>
+
+                            <div className="h-11 w-px bg-white/20" />
+
+                            <div>
+                                <p className="text-3xl font-bold text-[#F5F1E6]">
+                                    One
+                                </p>
+                                <p className="mt-1 text-xs text-[#F5F1E6]/65">
+                                    Booking platform
+                                </p>
+                            </div>
+
+                            <div className="h-11 w-px bg-white/20" />
+
+                            <div>
+                                <p className="text-3xl font-bold text-[#F5F1E6]">
+                                    Your
+                                </p>
+                                <p className="mt-1 text-xs text-[#F5F1E6]/65">
+                                    Time and convenience
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* HERO IMAGE */}
-                <div className="relative">
-                    <div className="relative h-[420px] overflow-hidden rounded-3xl border border-border shadow-xl md:h-[540px]">
-                        <img
-                            src="/images/hero.jpg"
-                            alt="Modern, bright collaborative workspace"
-                            className="h-full w-full object-cover"
-                        />
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#1B3F36]/85 via-black/10 to-transparent" />
-
-                        <div className="absolute bottom-0 left-0 right-0 p-7 text-white md:p-10">
-                            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#F5F1E6]/80">
-                                Spaces made simple
-                            </p>
-
-                            <h2 className="mt-3 max-w-md text-3xl font-bold leading-tight md:text-4xl">
-                                A better space for every idea.
-                            </h2>
-
-                            <p className="mt-3 max-w-sm text-sm leading-6 text-white/80">
-                                Study, work, connect and create in spaces designed around you.
-                            </p>
-
-                            <Link
-                                to="/explore"
-                                className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#F5F1E6] px-5 py-3 text-sm font-bold text-[#1B3F36] transition hover:bg-white"
-                            >
-                                Discover spaces
-                                <ArrowRight size={17} />
-                            </Link>
-                        </div>
-                    </div>
+                {/* BOTTOM HERO LABEL */}
+                <div className="absolute bottom-7 right-8 hidden items-center gap-3 text-xs font-medium tracking-widest text-white/70 lg:flex">
+                    <span className="h-px w-10 bg-[#C58A68]" />
+                    SPACES MADE SIMPLE
                 </div>
             </section>
 
@@ -230,32 +227,35 @@ function HomePage() {
                     </div>
 
                     <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {resourceTypes.map((resource) => {
+                        {resourceTypes.map((resource, index) => {
                             const Icon = resource.icon;
 
                             return (
                                 <Link
                                     key={resource.title}
                                     to="/explore"
-                                    className="group overflow-hidden rounded-2xl border border-border bg-surface-card transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                    className="group overflow-hidden rounded-2xl border border-border bg-surface-card transition duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                                    style={{
+                                        animationDelay: `${index * 100}ms`,
+                                    }}
                                 >
                                     <div className="relative h-56 overflow-hidden">
                                         <img
                                             src={resource.image}
                                             alt={resource.title}
                                             loading="lazy"
-                                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                                            className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                                         />
 
-                                        <div className="absolute inset-0 bg-gradient-to-t from-[#1B3F36]/70 to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#1B3F36]/80 via-transparent to-transparent transition duration-300 group-hover:from-[#1B3F36]/60" />
 
-                                        <div className="absolute bottom-4 left-5 flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5F1E6] text-[#1B3F36]">
+                                        <div className="absolute bottom-4 left-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#F5F1E6] text-[#1B3F36] shadow-lg transition duration-300 group-hover:rotate-6 group-hover:scale-110">
                                             <Icon size={22} />
                                         </div>
                                     </div>
 
                                     <div className="p-6">
-                                        <h3 className="text-lg font-bold text-text-primary">
+                                        <h3 className="text-lg font-bold text-text-primary transition-colors group-hover:text-[#8B4A33]">
                                             {resource.title}
                                         </h3>
 
@@ -267,7 +267,7 @@ function HomePage() {
                                             Explore category
                                             <ArrowRight
                                                 size={16}
-                                                className="transition-transform group-hover:translate-x-1"
+                                                className="transition-transform group-hover:translate-x-2"
                                             />
                                         </div>
                                     </div>
@@ -303,14 +303,17 @@ function HomePage() {
                         const Icon = step.icon;
 
                         return (
-                            <div key={step.number}>
+                            <div
+                                key={step.number}
+                                className="group rounded-2xl border border-border bg-surface-card p-7 transition duration-300 hover:-translate-y-2 hover:shadow-xl"
+                            >
                                 <div className="flex items-center justify-between">
-                                    <span className="text-4xl font-bold tracking-tight text-[#8B4A33] opacity-50">
+                                    <span className="text-4xl font-bold tracking-tight text-[#8B4A33]/60">
                                         {step.number}
                                     </span>
 
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1B3F36] text-[#F5F1E6]">
-                                        <Icon size={23} />
+                                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#1B3F36] text-[#F5F1E6] transition duration-300 group-hover:rotate-6 group-hover:scale-110">
+                                        <Icon size={24} />
                                     </div>
                                 </div>
 
@@ -333,8 +336,6 @@ function HomePage() {
 
                     {/* CTA CONTENT */}
                     <div className="max-w-xl">
-
-                        {/* SMALL BRAND LOGO */}
                         <div className="mb-6 flex items-center gap-3">
                             <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-[#F5F1E6] p-1">
                                 <img
@@ -344,7 +345,8 @@ function HomePage() {
                                 />
                             </div>
 
-                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#F5F1E6]/80">
+                            <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#F5F1E6]/80">
+                                <Sparkles size={14} />
                                 Your space is waiting
                             </p>
                         </div>
@@ -360,10 +362,13 @@ function HomePage() {
 
                         <Link
                             to="/explore"
-                            className="mt-8 inline-flex items-center gap-3 rounded-lg bg-[#F5F1E6] px-7 py-4 text-sm font-bold text-[#1B3F36] transition hover:bg-white"
+                            className="group mt-8 inline-flex items-center gap-3 rounded-lg bg-[#F5F1E6] px-7 py-4 text-sm font-bold text-[#1B3F36] transition duration-300 hover:-translate-y-1 hover:bg-white"
                         >
                             Explore spaces
-                            <ArrowRight size={18} />
+                            <ArrowRight
+                                size={18}
+                                className="transition-transform group-hover:translate-x-1"
+                            />
                         </Link>
                     </div>
 

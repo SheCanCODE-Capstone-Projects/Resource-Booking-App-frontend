@@ -84,3 +84,88 @@ button {
   background-color: #8B4A33;
   color: #FFFFFF;
 }
+
+
+/* SPACESYNC HERO ANIMATIONS */
+
+.hero-background {
+  animation: heroZoom 22s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes heroZoom {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.12);
+  }
+}
+
+.hero-reveal {
+  opacity: 0;
+  animation: heroReveal 0.9s ease-out forwards;
+}
+
+.hero-delay-1 {
+  animation-delay: 0.2s;
+}
+
+.hero-delay-2 {
+  animation-delay: 0.4s;
+}
+
+.hero-delay-3 {
+  animation-delay: 0.6s;
+}
+
+.hero-delay-4 {
+  animation-delay: 0.8s;
+}
+
+@keyframes heroReveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: floating 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: floating 7s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
+@keyframes floating {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(8deg);
+  }
+}
+
+/* ACCESSIBILITY: RESPECT REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+
+  .hero-background,
+  .hero-reveal,
+  .animate-float,
+  .animate-float-delayed {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
