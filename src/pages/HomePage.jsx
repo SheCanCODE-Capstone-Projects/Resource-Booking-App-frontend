@@ -92,7 +92,7 @@ function HomePage() {
         <main className="overflow-hidden">
 
             {/* HERO SECTION */}
-            <section className="relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#111A17] md:min-h-[760px]">
+            <section className="relative isolate mx-5 mt-6 mb-16 flex min-h-[680px] items-center overflow-hidden rounded-3xl bg-[#111A17] shadow-xl md:mx-8 md:mt-8 md:min-h-[760px]">
 
                 {/* ANIMATED BACKGROUND IMAGE */}
                 <div className="absolute inset-0 -z-20 overflow-hidden">
