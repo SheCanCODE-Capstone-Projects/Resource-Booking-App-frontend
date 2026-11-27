@@ -20,6 +20,18 @@ function LoginPage() {
 
     const [error, setError] = useState("");
 
+    const API_URL = process.env.REACT_APP_API_URL;
+    const BACKEND_URL = API_URL?.replace(/\/api\/?$/, "");
+
+    function handleGoogleLogin() {
+        if (!BACKEND_URL) {
+            setError("Google login is not configured. Please try again later.");
+            return;
+        }
+
+        window.location.href = `${BACKEND_URL}/oauth2/authorization/google`;
+    }
+
     function handleChange(event) {
         const { name, value } = event.target;
 
@@ -158,8 +170,26 @@ function LoginPage() {
                         className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1B3F36] px-5 py-4 text-sm font-bold text-white transition hover:bg-[#8B4A33] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {loading ? "Signing in..." : "Sign in"}
-
                         {!loading && <ArrowRight size={17} />}
+                    </button>
+
+                    <div className="my-6 flex items-center gap-4">
+                        <div className="h-px flex-1 bg-[#1B3F36]/15 dark:bg-white/10" />
+                        <span className="text-xs font-medium text-[#7B857F]">
+                            OR CONTINUE WITH
+                        </span>
+                        <div className="h-px flex-1 bg-[#1B3F36]/15 dark:bg-white/10" />
+                    </div>
+
+                    <button
+                        type="button"
+                        onClick={handleGoogleLogin}
+                        className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#1B3F36]/15 bg-white px-5 py-3.5 text-sm font-semibold text-[#1B3F36] transition hover:bg-[#F5F1E6] dark:border-white/15 dark:bg-[#20332B] dark:text-[#F5F1E6] dark:hover:bg-[#263C33]"
+                    >
+                        <span className="text-lg font-bold text-[#4285F4]">
+                            G
+                        </span>
+                        Continue with Google
                     </button>
 
                     <p className="mt-6 text-center text-sm text-[#59665F] dark:text-[#B9C5BE]">

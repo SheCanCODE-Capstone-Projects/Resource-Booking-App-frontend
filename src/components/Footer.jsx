@@ -9,6 +9,13 @@ import {
 import { Link } from "react-router-dom";
 
 function Footer() {
+    const handleBackToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
     return (
         <footer className="bg-[#1B3F36] text-[#F5F1E6]">
 
@@ -121,13 +128,14 @@ function Footer() {
                         © {new Date().getFullYear()} SpaceSync. All rights reserved.
                     </p>
 
-                    <a
-                        href="#top"
+                    <button
+                        type="button"
+                        onClick={handleBackToTop}
                         className="inline-flex items-center gap-2 text-xs text-[#D1DDD6] transition hover:text-[#C18A70]"
                     >
                         Back to top
                         <ArrowUpRight size={14} />
-                    </a>
+                    </button>
 
                 </div>
             </div>
